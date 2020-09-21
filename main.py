@@ -133,7 +133,9 @@ parceiro - /parceiro
 furry - /furry
 dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
 audio - /audio
-help - /help'''
+help - /help
+ping - /ping
+pong - /pong'''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
 def ping (update, context):
@@ -145,7 +147,6 @@ def pong (update, context):
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
 
 def main():
-    PORT = int(os.environ.get('PORT', 5000))
     TOKEN = None
     with open("token.txt") as f:
         TOKEN = f.read().strip()
@@ -164,8 +165,7 @@ def main():
     dp.add_handler(CommandHandler('ping', ping))
     dp.add_handler(CommandHandler('pong', pong))
 
-    updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
-    updater.bot.setWebhook('https://pure-hollows-28450.herokuapp.com/' + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
