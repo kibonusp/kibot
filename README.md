@@ -6,8 +6,8 @@ Bot de Telegram com funções completamente estúpidas. Você pode utilizar ele 
     <summary> Tutorial</summary>
 Para adicionar o bot em um grupo de Telegram clique em *Adicionar Membro* e pesquise por @sorvebot:
 
-![Adicionar Membro](./GitImages/addmembro.png)
-![Adicionar kibot](./GitImages/addkibot.png)
+![Adicionar Membro](https://imgur.com/HWWNYhK)
+![Adicionar kibot](https://imgur.com/f7rblOd)
 
 E pronto, agora você pode usar o bot!!!! Digite / no chat para ver os comandos possíveis e uma breve descrição de cada um deles. Para uma descrição mais detalhada do uso dos comandos, utilize /help.
 </details>
@@ -20,7 +20,7 @@ cd kibot
 pip install -r requirements.txt
 ```
 Agora, para você administrar um kibot, primeiro crie um bot usando o comando /newbot do @BotFather. Após isso, pegue o token e crie um arquivo token.txt contendo o token dentro do diretório kibot.
-![token.txt](./GitImages/token.png)
+![token.txt](https://imgur.com/Pust73p)
 
 E está pronto ^^
 Para rodar o bot na sua máquina, simplesmente execute o comando
