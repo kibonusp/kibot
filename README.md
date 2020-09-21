@@ -7,6 +7,7 @@ Bot de Telegram com funções completamente estúpidas. Você pode utilizar ele 
 Para adicionar o bot em um grupo de Telegram clique em *Adicionar Membro* e pesquise por @sorvebot:
 
 ![Adicionar Membro](https://i.imgur.com/HWWNYhK.png)
+
 ![Adicionar kibot](https://i.imgur.com/f7rblOd.png)
 
 E pronto, agora você pode usar o bot!!!! Digite / no chat para ver os comandos possíveis e uma breve descrição de cada um deles. Para uma descrição mais detalhada do uso dos comandos, utilize /help.
