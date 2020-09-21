@@ -11,6 +11,7 @@ Para adicionar o bot em um grupo de Telegram clique em *Adicionar Membro* e pesq
 
 E pronto, agora você pode usar o bot!!!! Digite / no chat para ver os comandos possíveis e uma breve descrição de cada um deles. Para uma descrição mais detalhada do uso dos comandos, utilize /help.
 </details>
+
 ## Criando o seu próprio kibot
 Primeiro, clone o repositório na sua máquina e instale as dependências usando os comandos abaixo:
 ```
