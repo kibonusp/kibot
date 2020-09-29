@@ -1,15 +1,15 @@
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
 import logging
 import random
-import psycopg2
+import sqlite3
 import os
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
     print("Oi, que casada você vai querer comer hoje?")
 
-def createOrFindUser (username, userID, DATABASE_URL):
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+def createOrFindUser (username, userID):
+    conn = sqlite3.connect('userInfo')
     cur = conn.cursor()
 
     cur.execute("SELECT username FROM Users WHERE id = (?)", (userID,))
@@ -28,12 +28,12 @@ def createOrFindUser (username, userID, DATABASE_URL):
     print("userID:", userID)
     conn.commit()
 
-def mbti(update, context, mbtiList, DATABASE_URL):
+def mbti(update, context, mbtiList):
     mbtiValue = update.message.text.partition(' ')[2].upper()
 
     if mbtiValue in mbtiList:
         createOrFindUser(update.effective_user.username, update.effective_user.id)
-        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        conn = sqlite3.connect('userInfo')
         cur = conn.cursor()
         cur.execute("UPDATE Users SET mbti=(?) WHERE id=(?)", (mbtiValue, update.effective_user.id))
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
@@ -44,8 +44,8 @@ def mbti(update, context, mbtiList, DATABASE_URL):
         answerText = "Digite uma personalidade MBTI válida, @{}.".format(update.effective_user.username)
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
-def casalMBTI (update, context, DATABASE_URL):
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+def casalMBTI (update, context):
+    conn = sqlite3.connect('userInfo')
     cur = conn.cursor()
 
     casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
@@ -64,19 +64,21 @@ def casalMBTI (update, context, DATABASE_URL):
         print("Usuário @{} não cadastrado".format(update.effective_user.username))
         context.bot.send_message(chat_id=update.effective_chat.id, text="@{}, defina sua personalidade MBTI antes com o comando mbti.".format(update.effective_user.username))
         companions = [0]
+        primeiraMensagem = 1
 
     try:
         cur.execute("SELECT username FROM Users WHERE mbti=(?)", (casais[userMBTI],))
         userTuple = cur.fetchall()
         companions = list(userTuple[0])
     except:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
+        if not primeiraMensagem:
+            context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
         companions = [0]
     conn.commit()
     return companions
 
-def casalpossivel (update, context, mbtiList, DATABASE_URL):
-    companions = casalMBTI(update, context, DATABASE_URL)
+def casalpossivel (update, context, mbtiList):
+    companions = casalMBTI(update, context)
     if companions[0] != 0:
         companionList = "Lista de Companheiros:\n"
         for companion in companions:
@@ -84,8 +86,8 @@ def casalpossivel (update, context, mbtiList, DATABASE_URL):
         context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
 
 
-def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
-    companions = casalMBTI(update, context, DATABASE_URL)
+def parceiroMBTI (update, context, mbtiList):
+    companions = casalMBTI(update, context)
     if companions[0] != 0:
         companion = random.choice(companions)
         context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
@@ -154,14 +156,13 @@ def cancelado (update, context):
     cancelado = update.message.text.partition(' ')[2]
     if cancelado == "":
         message = "{}, se você continuar errando os comandos vou ter que te cancelar \U0000274C \U0000274C \U0001F621".format(update.effective_user.username)
-    elif update.effective_user.id == 905996618:
+    elif "kibon" in cancelado or "Gabriel" in cancelado or "Freitas" in cancelado or "Furry" in cancelado or "casada" in cancelado or "comedor" in cancelado:
         message = "PAROU PAROU!!!!!. Primeira lei da robótica aqui, amigo. Um robô não pode cancelar seu criador \U0001F47E"
     else:
         message =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def main():
-    DATABASE_URL = os.environ['DATABASE_URL']
     mbtiList = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 
     TOKEN = None
@@ -172,9 +173,9 @@ def main():
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('mbti', lambda bot, update: mbti(bot, update, mbtiList, DATABASE_URL)))
-    dp.add_handler(CommandHandler('casais', lambda bot, update: casalpossivel(bot, update, mbtiList, DATABASE_URL)))
-    dp.add_handler(CommandHandler('parceiro', lambda bot, update: parceiroMBTI(bot, update, mbtiList, DATABASE_URL)))
+    dp.add_handler(CommandHandler('mbti', lambda bot, update: mbti(bot, update, mbtiList)))
+    dp.add_handler(CommandHandler('casais', lambda bot, update: casalpossivel(bot, update, mbtiList)))
+    dp.add_handler(CommandHandler('parceiro', lambda bot, update: parceiroMBTI(bot, update, mbtiList)))
     dp.add_handler(CommandHandler('furry', furry))
     dp.add_handler(CommandHandler('dividegrupos', dividegrupos))
     dp.add_handler(CommandHandler('audio', audio))
