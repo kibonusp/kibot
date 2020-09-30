@@ -48,6 +48,8 @@ def casalMBTI (update, context, DATABASE_URL):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
 
+    personalidadeMBTI = 1
+
     casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
             "ISTJ": "ESFP", "ISTJ":"ESFP",
             "INFP": "ENFJ", "ENFJ":"INFP",
@@ -64,13 +66,15 @@ def casalMBTI (update, context, DATABASE_URL):
         print("Usuário @{} não cadastrado".format(update.effective_user.username))
         context.bot.send_message(chat_id=update.effective_chat.id, text="@{}, defina sua personalidade MBTI antes com o comando mbti.".format(update.effective_user.username))
         companions = [0]
+        personalidadeMBTI = 0
 
     try:
         cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
         userTuple = cur.fetchall()
         companions = list(userTuple[0])
     except:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
+        if personalidadeMBTI:
+            context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
         companions = [0]
     conn.commit()
     return companions
