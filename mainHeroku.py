@@ -84,6 +84,7 @@ def casalMBTI (update, context, DATABASE_URL):
 
 def casalpossivel (update, context, mbtiList, DATABASE_URL):
     companions = casalMBTI(update, context, DATABASE_URL)
+    print(companions)
     if len(companions) >= 1:
         if companions[0] != 0:
             companionList = "Lista de Companheiros:"
@@ -94,6 +95,7 @@ def casalpossivel (update, context, mbtiList, DATABASE_URL):
 
 def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
     companions = casalMBTI(update, context, DATABASE_URL)
+    print(companions)
     if len(companions) >= 1:
         if companions[0] != 0:
             companion = random.choice(companions)
