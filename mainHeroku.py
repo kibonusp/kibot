@@ -85,7 +85,7 @@ def casalpossivel (update, context, mbtiList, DATABASE_URL):
                 companionList += "\n\t{}".format(companion)
             context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(uodate.effective_chat.username))
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_chat.username))
 
 
 def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
@@ -94,7 +94,7 @@ def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
             companion = random.choice(companions)
             context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(uodate.effective_chat.username))
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_chat.username))
 
 def furry (update, context):
     image = "./Furry Images/"
