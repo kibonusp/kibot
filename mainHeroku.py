@@ -77,7 +77,6 @@ def casalMBTI (update, context, DATABASE_URL):
             companionCerto = list(companion)[0]
             companions.append(companionCerto)
 
-        companions = list(userTuple)
         print("companions:", companions)
     except:
         if personalidadeMBTI:
