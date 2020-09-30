@@ -48,6 +48,7 @@ def casalMBTI (update, context, DATABASE_URL):
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cur = conn.cursor()
 
+    companions = []
     personalidadeMBTI = 1
 
     casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
@@ -72,7 +73,8 @@ def casalMBTI (update, context, DATABASE_URL):
         cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
         userTuple = cur.fetchall()
         print("userTuple: ", userTuple)
-        companions = list(userTuple)
+        for companion in userTuple:
+            companions.append(companion)
         print("companions:", companions)
     except:
         if personalidadeMBTI:
