@@ -74,7 +74,8 @@ def casalMBTI (update, context, DATABASE_URL):
         userTuple = cur.fetchall()
         print("userTuple: ", userTuple)
         for companion in userTuple:
-            companionCerto = list(companion)[0]
+            companionCerto = list(companion[0])[0]
+            print(companionCerto)
             companions.append(companionCerto)
 
         print("companions:", companions)
