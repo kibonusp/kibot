@@ -84,11 +84,12 @@ def casalMBTI (update, context, DATABASE_URL):
 
 def casalpossivel (update, context, mbtiList, DATABASE_URL):
     companions = casalMBTI(update, context, DATABASE_URL)
-    if companions[0] != 0:
-        companionList = "Lista de Companheiros:"
-        for companion in companions:
-            companionList += "\n\t{}".format(companion)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
+    if len(companions) >= 1:
+        if companions[0] != 0:
+            companionList = "Lista de Companheiros:"
+            for companion in companions:
+                companionList += "\n\t{}".format(companion)
+            context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
 
 
 def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
