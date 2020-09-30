@@ -73,8 +73,7 @@ def casalMBTI (update, context, DATABASE_URL):
         cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
         userTuple = cur.fetchall()
         print("userTuple: ", userTuple)
-        for companion in userTuple:
-            companions.append(companion)
+        companions = list(userTuple)
         print("companions:", companions)
     except:
         if personalidadeMBTI:
