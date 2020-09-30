@@ -65,28 +65,22 @@ def casalMBTI (update, context, DATABASE_URL):
     except:
         print("Usuário @{} não cadastrado".format(update.effective_user.username))
         context.bot.send_message(chat_id=update.effective_chat.id, text="@{}, defina sua personalidade MBTI antes com o comando mbti.".format(update.effective_user.username))
-        companions = [0]
         personalidadeMBTI = 0
 
-    try:
-        companions = []
-        cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
-        userTuple = cur.fetchall()
-        for companion in userTuple:
-            companionCerto = ''.join(map(str, companion[0]))
-            companions.append(companionCerto)
-    except:
-        if personalidadeMBTI:
-            context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
-        companions = [0]
+    companions = []
+
+    cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
+    userTuple = cur.fetchall()
+    for companion in userTuple:
+        companionCerto = ''.join(map(str, companion[0]))
+        companions.append(companionCerto)
     conn.commit()
     return companions
 
 def casalpossivel (update, context, mbtiList, DATABASE_URL):
     companions = casalMBTI(update, context, DATABASE_URL)
     print(companions)
-    if len(companions) >= 1:
-        if companions[0] != 0:
+    if companions:
             companionList = "Lista de Companheiros:"
             for companion in companions:
                 companionList += "\n\t{}".format(companion)
@@ -96,8 +90,7 @@ def casalpossivel (update, context, mbtiList, DATABASE_URL):
 def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
     companions = casalMBTI(update, context, DATABASE_URL)
     print(companions)
-    if len(companions) >= 1:
-        if companions[0] != 0:
+    if companions:
             companion = random.choice(companions)
             context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
 
