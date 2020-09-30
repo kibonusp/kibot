@@ -1,0 +1,11 @@
+start - Mensagem de início do bot
+mbti - Sua personalidade MBTI
+casais - Parceiros possíveis com seu MBTI
+parceiro - Parceiro ideal de acordo com seu MBTI
+furry - Imagens de Furry
+dividegrupos - Divide pessoas em grupos
+audio - Áudios engraçados
+ping - Manda um ping
+pong - Manda um pong
+cancelado - Cancela uma pessoa
+help - Mostra como usar os comandos
