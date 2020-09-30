@@ -94,9 +94,10 @@ def casalpossivel (update, context, mbtiList, DATABASE_URL):
 
 def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
     companions = casalMBTI(update, context, DATABASE_URL)
-    if companions[0] != 0:
-        companion = random.choice(companions)
-        context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
+    if len(companions) >= 1:
+        if companions[0] != 0:
+            companion = random.choice(companions)
+            context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
 
 def furry (update, context):
     image = "./Furry Images/"
