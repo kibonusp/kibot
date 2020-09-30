@@ -72,13 +72,9 @@ def casalMBTI (update, context, DATABASE_URL):
     try:
         cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
         userTuple = cur.fetchall()
-        print("userTuple: ", userTuple)
         for companion in userTuple:
-            companionCerto = list(companion[0])[0]
-            print(companionCerto)
+            companionCerto = list(companion[0])
             companions.append(companionCerto)
-
-        print("companions:", companions)
     except:
         if personalidadeMBTI:
             context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
