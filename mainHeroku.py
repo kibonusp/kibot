@@ -175,6 +175,7 @@ def main():
     TOKEN = None
     with open("token.txt") as f:
         TOKEN = f.read().strip()
+        APPNAME = f.read().strip()
     
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
@@ -192,7 +193,7 @@ def main():
     dp.add_handler(CommandHandler('cancelado', cancelado))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
-    updater.bot.setWebhook('https://kibot-telegram-bot.herokuapp.com/' + TOKEN)
+    updater.bot.setWebhook(APPNAME + TOKEN)
     updater.idle()
 
 if __name__ == '__main__':
