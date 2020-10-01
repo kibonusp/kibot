@@ -164,7 +164,7 @@ def websexo (update, context):
         messages = ["{}: Já volto ><".format(comido),
         "@{}: lava a bunda direito".format(comedor),
         "{}: Lavei".format(comido),
-        "@{}: ><".format(comido),
+        "{}: ><".format(comido),
         "@{}: deixa eu ver".format(comedor),
         "{}: *viro a bundinha pro ga*".format(comido),
         "@{}: *dou uma lambida*".format(comedor),
@@ -199,6 +199,7 @@ def main():
     dp.add_handler(CommandHandler('webabraco', webabraco))
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
     dp.add_handler(CommandHandler('websexo', websexo))
+    dp.add_handler(CommandHandler('webcafune', webcafune))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
