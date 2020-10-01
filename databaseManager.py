@@ -21,6 +21,7 @@ class DBM:
     
     def setMbtiValue(self, mbtiValue, userId):
         self.cur.execute("UPDATE Users SET mbti=(%s) WHERE id=(%s)", (mbtiValue, userId))
+        self.conn.commit()
     
     def findMbtiCouples(self, response, username, userId):
         casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
@@ -32,18 +33,24 @@ class DBM:
                 "ESFJ": "ISTP", "ISTP": "ESFJ",
                 "ENFP": "INTJ", "INTJ": "ENFP"}
 
-        self.cur.execute("SELECT mtbi from Users WHERE id=(%s)", (userId,))
-        userMbti = self.cur.fetchall()
+        self.cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (userId,))
+        userMbtiTuple = self.cur.fetchall()
 
+        print("UserMbtiTuple:", userMbtiTuple)
         companions = list()
-        if not userMbti:
+        if not userMbtiTuple:
             print("Usuário @{} não cadastrado".format(username))
             response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(username))
             return companions
 
-        self.cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
-        matches = self.cur.fetchall()
+        userMbti = list(userMbtiTuple[0])[0]
         
+        print("userMbti:", userMbti)
+        self.cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
+
+        matches = self.cur.fetchall()
+
+        print("matches:", matches)
         for user in matches:
             formatedCompanion = ''.join(map(str,user[0]))
             companions.append(formatedCompanion)

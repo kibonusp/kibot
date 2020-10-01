@@ -6,7 +6,7 @@ import os
 from informacoes import TOKEN, APPNAME
 
 DATABASE_URL = os.environ['DATABASE_URL']
-MBTLIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
+MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 dbm = DBM(DATABASE_URL)
 
 def start(update, context):
@@ -16,8 +16,9 @@ def start(update, context):
 def mbti(update, context):
     mbtiValue = update.message.text.partition(' ')[2].upper()
 
-    if mbtiValue in MBTLIST:
+    if mbtiValue in MBTILIST:
         dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
+        dbm.setMbtiValue(mbtiValue, update.effective_user.id)
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
         
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
