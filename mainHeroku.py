@@ -176,6 +176,8 @@ def main():
     with open("informacoes.txt") as f:
         TOKEN = f.read().strip()
         APPNAME = f.read().strip()
+    print(TOKEN)
+    print(APPNAME)
     
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
