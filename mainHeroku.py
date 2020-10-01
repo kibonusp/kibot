@@ -4,6 +4,7 @@ import random
 from databaseManager import DBM
 import os
 from informacoes import TOKEN, APPNAME
+from time import sleep
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -131,7 +132,7 @@ def webabraco (update, context):
         message = "{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
         context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
     else:
-        message = "@{}, parece que você não vai receber abracinho hj ʕ´• ᴥ•̥`ʔ"
+        message = "@{}, parece que você não vai dar um abracinho hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def webbeijo (update, context):
@@ -142,9 +143,41 @@ def webbeijo (update, context):
         message = "{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
         context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
     else:
-        message = "@{}, parece que você não vai receber beijinho hj ʕ´• ᴥ•̥`ʔ"
+        message = "@{}, parece que você não vai dar um beijinho hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
+def webcafune (update, context):
+    gif = "./Amor/Cafune/"
+    gif += random.choice(os.listdir(gif))
+    cafunezado = update.message.text.partition(' ')[2]
+    if cafunezado:
+        message = "{}, @{} te fez um cafuné (｡･ω･｡)ﾉ♡".format(cafunezado, update.effective_user.username)
+        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
+    else:
+        message = "@{}, parece que você não vai fazer cafuné hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+def websexo (update, context):
+    comido = update.message.text.partition(' ')[2]
+    if comido:
+        comedor = update.effective_user.username
+        messages = ["{}: Já volto ><".format(comido),
+        "@{}: lava a bunda direito".format(comedor),
+        "{}: Lavei".format(comido),
+        "@{}: ><".format(comido),
+        "@{}: deixa eu ver".format(comedor),
+        "{}: *viro a bundinha pro ga*".format(comido),
+        "@{}: *dou uma lambida*".format(comedor),
+        "{}: OOOHH YEAAAH".format(comido),
+        "{}: >//////<".format(comido),
+        "@{}: TA SUJO😡 ".format(comedor),
+        "{}: NÃO TÁ😭 ".format(comido)]
+        for message in messages:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+            sleep(4)
+    else:
+        message = "@{}, você precisa dizer quem você quer comer ^^"
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
@@ -165,6 +198,7 @@ def main():
     dp.add_handler(CommandHandler('cancelado', cancelado))
     dp.add_handler(CommandHandler('webabraco', webabraco))
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
+    dp.add_handler(CommandHandler('websexo', websexo))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
