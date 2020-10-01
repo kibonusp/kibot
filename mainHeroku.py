@@ -1,4 +1,4 @@
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters, ChatAction
 import logging
 import random
 from databaseManager import DBM
@@ -129,7 +129,7 @@ def webabraco (update, context):
     abracado = update.message.text.partition(' ')[2]
     confirm = "@{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
     context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=telegram.ChatAction.UPLOAD_PHOTO)
+    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=ChatAction.UPLOAD_PHOTO)
     context.bot.sendDocument(chat_id=update.effective_chat.id, document=gif)
 
 def webbeijo (update, context):
@@ -139,7 +139,7 @@ def webbeijo (update, context):
     beijado = update.message.text.partition(' ')[2]
     confirm = "@{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
     context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=telegram.ChatAction.UPLOAD_PHOTO)
+    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=ChatAction.UPLOAD_PHOTO)
 
     context.bot.sendDocument(chat_id=update.effective_chat.id, document=gif)
 
