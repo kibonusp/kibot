@@ -7,4 +7,5 @@ dividegrupos - Divide pessoas em grupos
 audio - Áudios engraçados
 ping - Manda um ping
 pong - Manda um pong
+cancelado - Cancela uma pessoa
 help - Mostra como usar os comandos
