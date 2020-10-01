@@ -1,42 +1,85 @@
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
 import logging
 import random
-from databaseManager import DBM
+import psycopg2
 import os
 from informacoes import TOKEN, APPNAME
-
-DATABASE_URL = os.environ['DATABASE_URL']
-MBTLIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
-dbm = DBM(DATABASE_URL)
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
     print("Oi, que casada você vai querer comer hoje?")
 
-def mbti(update, context):
+def createOrFindUser (username, userID, DATABASE_URL):
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+
+    cur.execute("SELECT username FROM Users WHERE id = (%s)", (userID,))
+    userTuple = cur.fetchall()
+    try:
+        Username = list(userTuple[0])[0]
+        userAchado = 1
+    except:
+        Username = username
+        userAchado = 0
+    if userAchado == 0:
+        cur.execute("INSERT INTO Users(id, username) VALUES (%s, %s)", (userID, username))
+        print("Usuário novo adicionado: {}".format(username))
+    else:
+        print("Usuário encontrado: {}".format(username))
+    print("userID:", userID)
+    conn.commit()
+
+def mbti(update, context, mbtiList, DATABASE_URL):
     mbtiValue = update.message.text.partition(' ')[2].upper()
 
-    if mbtiValue in MBTLIST:
-        dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
+    if mbtiValue in mbtiList:
+        createOrFindUser(update.effective_user.username, update.effective_user.id, DATABASE_URL)
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        cur = conn.cursor()
+        cur.execute("UPDATE Users SET mbti=(%s) WHERE id=(%s)", (mbtiValue, update.effective_user.id))
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
-        
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
+        conn.commit()
 
     else:
         answerText = "Digite uma personalidade MBTI válida, @{}.".format(update.effective_user.username)
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
-def casalMBTI(update, context):
-    response = list()
-    companions = dbm.findMbtiCouples(response, update.effective_user.username, update.effective_user.id)
-    
-    for text in response:
-        context.bot.send_message(chat_id=update.effective_chat.id,text=text)
-  
+def casalMBTI (update, context, DATABASE_URL):
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cur = conn.cursor()
+
+    personalidadeMBTI = 1
+
+    casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
+            "ISTJ": "ESFP", "ISTJ":"ESFP",
+            "INFP": "ENFJ", "ENFJ":"INFP",
+            "INTP": "ENTJ", "ENTJ": "INTP",
+            "ESTP": "ISFJ", "ISFJ": "ESTP",
+            "ENTP": "INFJ", "INFJ": "ENTP",
+            "ESFJ": "ISTP", "ISTP": "ESFJ",
+            "ENFP": "INTJ", "INTJ": "ENFP"}
+    try:  
+        cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (update.effective_user.id,))
+        userTuple = cur.fetchall()
+        userMBTI = list(userTuple[0])[0]
+    except:
+        print("Usuário @{} não cadastrado".format(update.effective_user.username))
+        context.bot.send_message(chat_id=update.effective_chat.id, text="@{}, defina sua personalidade MBTI antes com o comando mbti.".format(update.effective_user.username))
+        personalidadeMBTI = 0
+
+    companions = []
+
+    cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMBTI],))
+    userTuple = cur.fetchall()
+    for companion in userTuple:
+        companionCerto = ''.join(map(str, companion[0]))
+        companions.append(companionCerto)
+    conn.commit()
     return companions
 
-def casalpossivel(update, context):
-    companions = casalMBTI(update, context)
+def casalpossivel (update, context, mbtiList, DATABASE_URL):
+    companions = casalMBTI(update, context, DATABASE_URL)
     if companions:
             companionList = "Lista de Companheiros:"
             for companion in companions:
@@ -45,8 +88,9 @@ def casalpossivel(update, context):
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
-def parceiroMBTI(update, context):
-    companions = casalMBTI(update, context)
+
+def parceiroMBTI (update, context, mbtiList, DATABASE_URL):
+    companions = casalMBTI(update, context, DATABASE_URL)
     if companions:
             companion = random.choice(companions)
             context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
@@ -124,15 +168,19 @@ def cancelado (update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def main():
+    DATABASE_URL = os.environ['DATABASE_URL']
+
+    mbtiList = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
+
     PORT = int(os.environ.get('PORT', 5000))
     
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('mbti', mbti))
-    dp.add_handler(CommandHandler('casais', casalpossivel))
-    dp.add_handler(CommandHandler('parceiro', parceiroMBTI))
+    dp.add_handler(CommandHandler('mbti', lambda bot, update: mbti(bot, update, mbtiList, DATABASE_URL)))
+    dp.add_handler(CommandHandler('casais', lambda bot, update: casalpossivel(bot, update, mbtiList, DATABASE_URL)))
+    dp.add_handler(CommandHandler('parceiro', lambda bot, update: parceiroMBTI(bot, update, mbtiList, DATABASE_URL)))
     dp.add_handler(CommandHandler('furry', furry))
     dp.add_handler(CommandHandler('dividegrupos', dividegrupos))
     dp.add_handler(CommandHandler('audio', audio))
