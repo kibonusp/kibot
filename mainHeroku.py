@@ -131,7 +131,8 @@ websexo - /websexo [PESSOA]
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
 def webabraco (update, context):    
-    gif = "./Amor/Abraco/abraco.gif.mp4"
+    gif = "./Amor/Abraco/"
+    gif += random.choice(os.listdir(gif))
     abracado = update.message.text.partition(' ')[2]
     if abracado:
         message = "{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
