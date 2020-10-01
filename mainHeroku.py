@@ -129,7 +129,7 @@ def webabraco (update, context):
     abracado = update.message.text.partition(' ')[2]
     if abracado:
         message = "{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
-        context.bot.send_animation(chat_id=update.message.chat.id, animation=gif, caption=message)
+        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
     else:
         message = "@{}, parece que você não vai receber abracinho hj ʕ´• ᴥ•̥`ʔ"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
@@ -140,7 +140,7 @@ def webbeijo (update, context):
     beijado = update.message.text.partition(' ')[2]
     if beijado:
         message = "{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
-        context.bot.send_animation(chat_id=update.message.chat.id, animation=gif, caption=message)
+        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
     else:
         message = "@{}, parece que você não vai receber beijinho hj ʕ´• ᴥ•̥`ʔ"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
