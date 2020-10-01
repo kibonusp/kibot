@@ -41,11 +41,13 @@ class DBM:
             response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(username))
             return companions
 
-        userMbti = userMbtiTuple[0][0]
+        userMbti = list(userMbtiTuple[0])[0]
         
         self.cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
-        matches = self.cur.fetchall()
         
+        temp = self.cur.fetchall()
+        matches = temp[0]
+
         for user in matches:
             formatedCompanion = ''.join(map(str,user[0]))
             companions.append(formatedCompanion)
