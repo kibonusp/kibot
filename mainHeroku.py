@@ -122,7 +122,12 @@ audio - /audio
 help - /help
 ping - /ping
 pong - /pong
-cancelado - /cancelado [NOME]'''
+cancelado - /cancelado [NOME]
+webcafune - /webcafune [PESSOA]
+webabraco - /webabraco [PESSOA]
+webbeijo - /webbeijo [PESSOA]
+websexo - /websexo [PESSOA]
+'''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
 def webabraco (update, context):    
