@@ -126,10 +126,12 @@ cancelado - /cancelado [NOME]'''
 
 def webabraco (update, context):    # webabraco @sorvete
     abracado = update.message.text.partition(' ')[2]
-    confirm = "@{}, @{} quer te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
+    confirm = "@{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
     context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
-    bot.sendDocument(chat_id=chat_id, document="./Amor/abraco.gif.mp4")
+    context.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
+    context.bot.sendDocument(chat_id=chat_id, document="./Amor/abraco.gif.mp4")
+
+def webbeijo
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
