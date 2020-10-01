@@ -33,14 +33,16 @@ class DBM:
                 "ENFP": "INTJ", "INTJ": "ENFP"}
 
         self.cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (userId,))
-        userMbti = self.cur.fetchall()
+        userMbtiTuple = self.cur.fetchall()
 
         companions = list()
-        if not userMbti:
+        if not userMbtiTuple:
             print("Usuário @{} não cadastrado".format(username))
             response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(username))
             return companions
 
+        userMbti = list(userMbtiTuple[0])[0]
+        
         self.cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
         matches = self.cur.fetchall()
         
