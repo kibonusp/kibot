@@ -193,7 +193,7 @@ def main():
     dp.add_handler(CommandHandler('cancelado', cancelado))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
-    updater.bot.setWebhook('YouAppName' + TOKEN)
+    updater.bot.setWebhook(APPNAME + TOKEN)
     updater.idle()
 
 if __name__ == '__main__':
