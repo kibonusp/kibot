@@ -36,6 +36,7 @@ class DBM:
         self.cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (userId,))
         userMbtiTuple = self.cur.fetchall()
 
+        print("UserMbtiTuple:", userMbtiTuple)
         companions = list()
         if not userMbtiTuple:
             print("Usuário @{} não cadastrado".format(username))
@@ -44,10 +45,12 @@ class DBM:
 
         userMbti = list(userMbtiTuple[0])[0]
         
+        print("userMbti:", userMbti)
         self.cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
 
         matches = self.cur.fetchall()
 
+        print("matches:", matches)
         for user in matches:
             formatedCompanion = ''.join(map(str,user[0]))
             companions.append(formatedCompanion)
