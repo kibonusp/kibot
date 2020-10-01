@@ -124,14 +124,24 @@ pong - /pong
 cancelado - /cancelado [NOME]'''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
-def webabraco (update, context):    # webabraco @sorvete
+def webabraco (update, context):    
+    gif = "./Amor/Abraco/abraco.gif.mp4"
     abracado = update.message.text.partition(' ')[2]
     confirm = "@{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
     context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
     context.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
-    context.bot.sendDocument(chat_id=chat_id, document="./Amor/abraco.gif.mp4")
+    context.bot.sendDocument(chat_id=chat_id, document=gif)
 
-def webbeijo
+def webbeijo (update, context):
+    gif = "./Amor/Beijo/"
+    gif += random.choice(os.listdir(gif))
+    
+    beijado = update.message.text.partition(' ')[2]
+    confirm = "@{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
+    context.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
+
+    context.bot.sendDocument(chat_id=chat_id, document=gif)
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
@@ -151,6 +161,7 @@ def main():
     dp.add_handler(CommandHandler('pong', pong))
     dp.add_handler(CommandHandler('cancelado', cancelado))
     dp.add_handler(CommandHandler('webabraco', webabraco))
+    dp.add_handler(CommandHandler('webbeijo', webbeijo))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
