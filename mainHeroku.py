@@ -4,6 +4,7 @@ import random
 from databaseManager import DBM
 import os
 from informacoes import TOKEN, APPNAME
+from time import sleep
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -11,7 +12,6 @@ dbm = DBM(DATABASE_URL)
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
-    print("Oi, que casada você vai querer comer hoje?")
 
 def mbti(update, context):
     mbtiValue = update.message.text.partition(' ')[2].upper()
@@ -20,7 +20,6 @@ def mbti(update, context):
         dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
         dbm.setMbtiValue(mbtiValue, update.effective_user.id)
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
-        
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
     else:
@@ -92,20 +91,6 @@ def audio (update, context):
     audio += random.choice(os.listdir(audio))
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
-def ajuda (update, context):
-    helpText = '''start - /start
-mbti - /mbti [MBTI]
-casais - /casais
-parceiro - /parceiro
-furry - /furry
-dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
-audio - /audio
-help - /help
-ping - /ping
-pong - /pong
-cancelado - /cancelado [NOME]'''
-    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
-
 def ping (update, context):
     ping = "./Ping Pong/ping.mp3"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
@@ -124,6 +109,80 @@ def cancelado (update, context):
         message =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
+def ajuda (update, context):
+    helpText = '''start - /start
+mbti - /mbti [MBTI]
+casais - /casais
+parceiro - /parceiro
+furry - /furry
+dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
+audio - /audio
+help - /help
+ping - /ping
+pong - /pong
+cancelado - /cancelado [NOME]
+webcafune - /webcafune [PESSOA]
+webabraco - /webabraco [PESSOA]
+webbeijo - /webbeijo [PESSOA]
+websexo - /websexo [PESSOA]
+'''
+    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
+
+def webabraco (update, context):    
+    gif = "./Amor/Abraco/"
+    gif += random.choice(os.listdir(gif))
+    abracado = update.message.text.partition(' ')[2]
+    if abracado:
+        message = "{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
+        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
+    else:
+        message = "@{}, parece que você não vai dar um abracinho hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+def webbeijo (update, context):
+    gif = "./Amor/Beijo/"
+    gif += random.choice(os.listdir(gif))
+    beijado = update.message.text.partition(' ')[2]
+    if beijado:
+        message = "{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
+        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
+    else:
+        message = "@{}, parece que você não vai dar um beijinho hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+def webcafune (update, context):
+    gif = "./Amor/Cafune/"
+    gif += random.choice(os.listdir(gif))
+    cafunezado = update.message.text.partition(' ')[2]
+    if cafunezado:
+        message = "{}, @{} te fez um cafuné (｡･ω･｡)ﾉ♡".format(cafunezado, update.effective_user.username)
+        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
+    else:
+        message = "@{}, parece que você não vai fazer cafuné hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+def websexo (update, context):
+    comido = update.message.text.partition(' ')[2]
+    if comido:
+        comedor = update.effective_user.username
+        messages = ["{}: Já volto ><".format(comido),
+        "@{}: lava a bunda direito".format(comedor),
+        "{}: Lavei".format(comido),
+        "{}: ><".format(comido),
+        "@{}: deixa eu ver".format(comedor),
+        "{}: *viro a bundinha pro ga*".format(comido),
+        "@{}: *dou uma lambida*".format(comedor),
+        "{}: OOOHH YEAAAH".format(comido),
+        "{}: >//////<".format(comido),
+        "@{}: TA SUJO😡 ".format(comedor),
+        "{}: NÃO TÁ😭 ".format(comido)]
+        for message in messages:
+            context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+            sleep(4)
+    else:
+        message = "@{}, você precisa dizer quem você quer comer ^^"
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
 def main():
     PORT = int(os.environ.get('PORT', 5000))
     
@@ -141,6 +200,10 @@ def main():
     dp.add_handler(CommandHandler('ping', ping))
     dp.add_handler(CommandHandler('pong', pong))
     dp.add_handler(CommandHandler('cancelado', cancelado))
+    dp.add_handler(CommandHandler('webabraco', webabraco))
+    dp.add_handler(CommandHandler('webbeijo', webbeijo))
+    dp.add_handler(CommandHandler('websexo', websexo))
+    dp.add_handler(CommandHandler('webcafune', webcafune))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
