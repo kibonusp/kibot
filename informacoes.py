@@ -1,2 +1,0 @@
-TOKEN = "1319195477:AAHHqzr1xQ7dbUyK7CXBK4YGCSgRFFgFAf4"
-APPNAME = "kibot-telegram-bot"
