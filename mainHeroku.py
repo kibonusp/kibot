@@ -8,10 +8,10 @@ from informacoes import TOKEN, APPNAME
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 dbm = DBM(DATABASE_URL)
+LISTAABRACO = []
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
-    print("Oi, que casada você vai querer comer hoje?")
 
 def mbti(update, context):
     mbtiValue = update.message.text.partition(' ')[2].upper()
@@ -20,7 +20,7 @@ def mbti(update, context):
         dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
         dbm.setMbtiValue(mbtiValue, update.effective_user.id)
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
-        
+        print(answerText)
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
     else:
@@ -92,20 +92,6 @@ def audio (update, context):
     audio += random.choice(os.listdir(audio))
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
-def ajuda (update, context):
-    helpText = '''start - /start
-mbti - /mbti [MBTI]
-casais - /casais
-parceiro - /parceiro
-furry - /furry
-dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
-audio - /audio
-help - /help
-ping - /ping
-pong - /pong
-cancelado - /cancelado [NOME]'''
-    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
-
 def ping (update, context):
     ping = "./Ping Pong/ping.mp3"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
@@ -124,6 +110,27 @@ def cancelado (update, context):
         message =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
+def ajuda (update, context):
+    helpText = '''start - /start
+mbti - /mbti [MBTI]
+casais - /casais
+parceiro - /parceiro
+furry - /furry
+dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
+audio - /audio
+help - /help
+ping - /ping
+pong - /pong
+cancelado - /cancelado [NOME]'''
+    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
+
+def webabraco (update, context):    # webabraco @sorvete
+    abracado = update.message.text.partition(' ')[2]
+    confirm = "@{}, @{} quer te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
+    bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
+    bot.sendDocument(chat_id=chat_id, document="./Amor/abraco.gif.mp4")
+
 def main():
     PORT = int(os.environ.get('PORT', 5000))
     
@@ -141,6 +148,7 @@ def main():
     dp.add_handler(CommandHandler('ping', ping))
     dp.add_handler(CommandHandler('pong', pong))
     dp.add_handler(CommandHandler('cancelado', cancelado))
+    dp.add_handler(CommandHandler('webabraco', webabraco))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
