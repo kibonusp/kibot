@@ -1,4 +1,4 @@
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters, ChatAction
+from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
 import logging
 import random
 from databaseManager import DBM
@@ -127,21 +127,24 @@ cancelado - /cancelado [NOME]'''
 def webabraco (update, context):    
     gif = "./Amor/Abraco/abraco.gif.mp4"
     abracado = update.message.text.partition(' ')[2]
-    confirm = "@{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=ChatAction.UPLOAD_PHOTO)
-    context.bot.sendDocument(chat_id=update.effective_chat.id, document=gif)
+    if abracado:
+        message = "{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
+        bot.send_animation(chat_id=update.message.chat.id, animation=gif, caption=message)
+    else:
+        message = "@{}, parece que você não vai receber abracinho hj ʕ´• ᴥ•̥`ʔ"
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def webbeijo (update, context):
     gif = "./Amor/Beijo/"
     gif += random.choice(os.listdir(gif))
-    
     beijado = update.message.text.partition(' ')[2]
-    confirm = "@{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=ChatAction.UPLOAD_PHOTO)
+    if beijado:
+        message = "{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
+        bot.send_animation(chat_id=update.message.chat.id, animation=gif, caption=message)
+    else:
+        message = "@{}, parece que você não vai receber beijinho hj ʕ´• ᴥ•̥`ʔ"
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-    context.bot.sendDocument(chat_id=update.effective_chat.id, document=gif)
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
