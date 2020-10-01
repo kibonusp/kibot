@@ -173,7 +173,7 @@ def main():
 
     PORT = int(os.environ.get('PORT', 5000))
     TOKEN = None
-    with open("token.txt") as f:
+    with open("informacoes.txt") as f:
         TOKEN = f.read().strip()
         APPNAME = f.read().strip()
     
