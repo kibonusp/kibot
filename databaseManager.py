@@ -32,7 +32,7 @@ class DBM:
                 "ESFJ": "ISTP", "ISTP": "ESFJ",
                 "ENFP": "INTJ", "INTJ": "ENFP"}
 
-        self.cur.execute("SELECT mtbi from Users WHERE id=(%s)", (userId,))
+        self.cur.execute("SELECT mtbi FROM Users WHERE id=(%s)", (userId,))
         userMbti = self.cur.fetchall()
 
         companions = list()
