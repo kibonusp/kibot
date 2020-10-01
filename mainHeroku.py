@@ -9,7 +9,6 @@ from time import sleep
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 dbm = DBM(DATABASE_URL)
-LISTAABRACO = []
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
