@@ -3,6 +3,7 @@ import logging
 import random
 from databaseManager import DBM
 import os
+from informacoes import TOKEN, APPNAME
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTLIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -124,10 +125,6 @@ def cancelado (update, context):
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
-    TOKEN = None
-    with open("token.txt") as f:
-        TOKEN = f.read().strip()
-        APPNAME = f.read().strip()
     
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher

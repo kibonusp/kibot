@@ -3,6 +3,7 @@ import logging
 import random
 import sqlite3
 import os
+from informacoes.py import TOKEN
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
@@ -166,10 +167,6 @@ def cancelado (update, context):
 
 def main():
     mbtiList = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
-
-    TOKEN = None
-    with open("token.txt") as f:
-        TOKEN = f.read().strip()
     
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
