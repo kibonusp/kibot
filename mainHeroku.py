@@ -3,6 +3,7 @@ import logging
 import random
 import psycopg2
 import os
+from informacoes import TOKEN, APPNAME
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
@@ -172,12 +173,6 @@ def main():
     mbtiList = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 
     PORT = int(os.environ.get('PORT', 5000))
-    TOKEN = None
-    with open("informacoes.txt") as f:
-        TOKEN = f.read().strip()
-        APPNAME = f.read().strip()
-    print(TOKEN)
-    print(APPNAME)
     
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
