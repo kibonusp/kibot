@@ -21,6 +21,7 @@ cd kibot
 pip install -r requirements.txt
 ```
 Agora, para você administrar um kibot, primeiro crie um bot usando o comando /newbot do @BotFather. Após isso, pegue o token e crie um arquivo informacoes contendo o token dentro do diretório kibot e o appname do Heroku, caso vá usar.
+
 ![informacoes.py](https://i.imgur.com/TKn5GPu.png)
 
 E está pronto ^^
