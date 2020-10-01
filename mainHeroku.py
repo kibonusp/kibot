@@ -129,8 +129,8 @@ def webabraco (update, context):
     abracado = update.message.text.partition(' ')[2]
     confirm = "@{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
     context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    context.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
-    context.bot.sendDocument(chat_id=chat_id, document=gif)
+    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=telegram.ChatAction.UPLOAD_PHOTO)
+    context.bot.sendDocument(chat_id=update.effective_chat.id, document=gif)
 
 def webbeijo (update, context):
     gif = "./Amor/Beijo/"
@@ -139,9 +139,9 @@ def webbeijo (update, context):
     beijado = update.message.text.partition(' ')[2]
     confirm = "@{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
     context.bot.send_message(chat_id=update.effective_chat.id, text=confirm)
-    context.bot.sendChatAction(chat_id=chat_id, action=telegram.ChatAction.UPLOAD_PHOTO)
+    context.bot.sendChatAction(chat_id=update.effective_chat.id, action=telegram.ChatAction.UPLOAD_PHOTO)
 
-    context.bot.sendDocument(chat_id=chat_id, document=gif)
+    context.bot.sendDocument(chat_id=update.effective_chat.id, document=gif)
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
