@@ -19,13 +19,11 @@ def createOrFindUser (username, userID):
 
     cur.execute("SELECT username FROM Users WHERE id = (?)", (userID,))
     userTuple = cur.fetchall()
-    try:
-        Username = list(userTuple[0])[0]
-        userAchado = 1
-    except:
-        Username = username
-        userAchado = 0
-    if userAchado == 0:
+    if list(userTuple[0])[0]:
+        userAchado = True
+    else:
+        userAchado = False
+    if userAchado:
         cur.execute("INSERT INTO Users(id, username) VALUES (?, ?)", (userID, username))
         print("Usuário novo adicionado: {}".format(username))
     else:
@@ -55,7 +53,7 @@ def casalMBTI (update, context):
 
     response = list()
     casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
-            "ISTJ": "ESFP", "ISTJ":"ESFP",
+            "ISTJ": "ESFP", "ESFP":"ISTJ",
             "INFP": "ENFJ", "ENFJ":"INFP",
             "INTP": "ENTJ", "ENTJ": "INTP",
             "ESTP": "ISFJ", "ISFJ": "ESTP",
@@ -63,24 +61,26 @@ def casalMBTI (update, context):
             "ESFJ": "ISTP", "ISTP": "ESFJ",
             "ENFP": "INTJ", "INTJ": "ENFP"}
 
-    cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (userId,))
-    userMbtiTuple = self.cur.fetchall()
+    cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (update.effective_user.id,))
+    userMbtiTuple = cur.fetchall()
 
     companions = list()
     if not userMbtiTuple:
-        print("Usuário @{} não cadastrado".format(username))
-        response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(username))
-    else:
-        userMbti = list(userMbtiTuple[0])[0]
-        cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
-        matches = self.cur.fetchall()
-        for user in matches:
-            formatedCompanion = ''.join(map(str,user[0]))
-            companions.append(formatedCompanion)
-        conn.commit()
+        print("Usuário @{} não cadastrado".format(update.effective_user.username,))
+        response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(update.effective_user.id,))
+        return companions
+
+    userMbti = list(userMbtiTuple[0])[0]
+    cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
+    matches = cur.fetchall()
+    for user in matches:
+        formatedCompanion = ''.join(map(str,user[0]))
+        companions.append(formatedCompanion)
+    conn.commit()
 
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
+    return companions
 
 def casalpossivel (update, context):
     companions = casalMBTI(update, context)
@@ -88,8 +88,9 @@ def casalpossivel (update, context):
         companionList = "Lista de Companheiros:"
         for companion in companions:
             companionList += "\n\t{}".format(companion)
-    else:
         context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
 def parceiroMBTI (update, context):
     companions = casalMBTI(update, context)
@@ -226,6 +227,7 @@ webcafune - /webcafune [PESSOA]
 webabraco - /webabraco [PESSOA]
 webbeijo - /webbeijo [PESSOA]
 websexo - /websexo [PESSOA]
+dente - /dente
 '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 

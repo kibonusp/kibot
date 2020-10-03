@@ -3,7 +3,7 @@ import logging
 import random
 from databaseManager import DBM
 import os
-from dente import dente_fotos
+from dentes import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
 
@@ -30,10 +30,9 @@ def mbti(update, context):
 def casalMBTI(update, context):
     response = list()
     companions = dbm.findMbtiCouples(response, update.effective_user.username, update.effective_user.id)
-    
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
-  
+    
     return companions
 
 def casalpossivel(update, context):
@@ -42,8 +41,9 @@ def casalpossivel(update, context):
         companionList = "Lista de Companheiros:"
         for companion in companions:
             companionList += "\n\t{}".format(companion)
-    else:
         context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
 def parceiroMBTI(update, context):
     companions = casalMBTI(update, context)
@@ -174,12 +174,12 @@ def dente (update, context):
         foto = random.choice(list(dente_fotos.keys()))    
 
     foto = random.choice(list(dente_fotos.keys()))
-    eh_audio = 0 
+    eh_audio = False
     
     if foto == "suga" or foto == "motorzim":
         audio = "./Audio-dente/"
         audio += random.choice(list(dente_fotos[foto]["audio"].values()))
-        eh_audio = 1
+        eh_audio = True
     
     imagem += dente_fotos[foto]["arquivo"]
     legenda = dente_fotos[foto]["legenda"]

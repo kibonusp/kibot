@@ -1,6 +1,5 @@
 import psycopg2 as psql
 
-
 class DBM:
     ''' Instance of a Database Manager '''
     def __init__(self, DATABASE_URL):
@@ -25,7 +24,7 @@ class DBM:
     
     def findMbtiCouples(self, response, username, userId):
         casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
-                "ISTJ": "ESFP", "ISTJ":"ESFP",
+                "ISTJ": "ESFP", "ESFP":"ISTJ",
                 "INFP": "ENFJ", "ENFJ":"INFP",
                 "INTP": "ENTJ", "ENTJ": "INTP",
                 "ESTP": "ISFJ", "ISFJ": "ESTP",
