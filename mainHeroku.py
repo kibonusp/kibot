@@ -3,6 +3,7 @@ import logging
 import random
 from databaseManager import DBM
 import os
+from dente import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
 
@@ -20,7 +21,6 @@ def mbti(update, context):
         dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
         dbm.setMbtiValue(mbtiValue, update.effective_user.id)
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
-        print(answerText)
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
     else:
@@ -39,18 +39,17 @@ def casalMBTI(update, context):
 def casalpossivel(update, context):
     companions = casalMBTI(update, context)
     if companions:
-            companionList = "Lista de Companheiros:"
-            for companion in companions:
-                companionList += "\n\t{}".format(companion)
-            context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
+        companionList = "Lista de Companheiros:"
+        for companion in companions:
+            companionList += "\n\t{}".format(companion)
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
+        context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
 
 def parceiroMBTI(update, context):
     companions = casalMBTI(update, context)
     if companions:
-            companion = random.choice(companions)
-            context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
+        companion = random.choice(companions)
+        context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
@@ -110,25 +109,6 @@ def cancelado (update, context):
         message =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-def ajuda (update, context):
-    helpText = '''start - /start
-mbti - /mbti [MBTI]
-casais - /casais
-parceiro - /parceiro
-furry - /furry
-dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
-audio - /audio
-help - /help
-ping - /ping
-pong - /pong
-cancelado - /cancelado [NOME]
-webcafune - /webcafune [PESSOA]
-webabraco - /webabraco [PESSOA]
-webbeijo - /webbeijo [PESSOA]
-websexo - /websexo [PESSOA]
-'''
-    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
-
 def webabraco (update, context):    
     gif = "./Amor/Abraco/"
     gif += random.choice(os.listdir(gif))
@@ -179,10 +159,55 @@ def websexo (update, context):
         "{}: NÃO TÁ😭 ".format(comido)]
         for message in messages:
             context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-            sleep(1.5)
+            sleep(4)
     else:
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        
+imagem_dente = list()
+def dente (update, context):
+    imagem = "./Odontologia/"
+    foto = random.choice(list(dente_fotos.keys()))
+    imagem_dente.append(foto)
+    
+    if imagem_dente[len(imagem_dente)- 2] == foto:
+        foto = random.choice(list(dente_fotos.keys()))    
+
+    foto = random.choice(list(dente_fotos.keys()))
+    eh_audio = 0 
+    
+    if foto == "suga" or foto == "motorzim":
+        audio = "./Audio-dente/"
+        audio += random.choice(list(dente_fotos[foto]["audio"].values()))
+        eh_audio = 1
+    
+    imagem += dente_fotos[foto]["arquivo"]
+    legenda = dente_fotos[foto]["legenda"]
+
+    context.bot.sendPhoto(chat_id = update.message.chat_id, photo = open(imagem, "rb"), caption = legenda, parse_mode = "html")
+    
+    if eh_audio:
+        context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
+
+def ajuda (update, context):
+    helpText = '''start - /start
+mbti - /mbti [MBTI]
+casais - /casais
+parceiro - /parceiro
+furry - /furry
+dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
+audio - /audio
+help - /help
+ping - /ping
+pong - /pong
+cancelado - /cancelado [NOME]
+webcafune - /webcafune [PESSOA]
+webabraco - /webabraco [PESSOA]
+webbeijo - /webbeijo [PESSOA]
+websexo - /websexo [PESSOA]
+dente - /dente
+'''
+    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
@@ -205,7 +230,8 @@ def main():
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
-
+    dp.add_handler(CommandHandler('dente', dente))
+    
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
     updater.idle()

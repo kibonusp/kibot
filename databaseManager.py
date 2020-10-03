@@ -11,7 +11,7 @@ class DBM:
         self.cur.execute("SELECT username FROM Users WHERE id = (%s)",   (userID,))
         user = self.cur.fetchall()
         if not user:
-            self.cur.execute("INSERT INTO Users(id, username) VALUES (%s, %s)", (userID, username))
+            self.cur.execute("INSERT INTO Users(id, username) VALUES     (%s, %s)", (userID, username))
             print("Usuário novo adicionado: {}".format(username))
         else:
             print("Usuário encontrado: {}".format(username))

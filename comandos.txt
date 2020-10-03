@@ -8,8 +8,4 @@ audio - Áudios engraçados
 ping - Manda um ping
 pong - Manda um pong
 cancelado - Cancela uma pessoa
-webcafune - Dá um cafuné em alguém
-webabraco - Dá um abraço em alguém
-webbeijo - Dá um beijo em alguém
-websexo - Faz sexo com alguém
 help - Mostra como usar os comandos
