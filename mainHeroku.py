@@ -123,7 +123,7 @@ def pingpong(update, context):
     arquivoJSON = arquivos[0]
     arquivoPing = arquivos[1]
     arquivoPong = arquivos[2]
-    listaMensagens = loadJSON(arquivoJSON)
+    listaMensagens = loadJSON(str(arquivoJSON))
     listaJogadores = update.message.text.split()[1:]
     if len(listaJogadores) < 2 or len(listaJogadores) > 2:
         mensagemEnviar = listaMensagens[5]
