@@ -1,2 +1,2 @@
-TOKEN = "1319195477:AAGRw-gjGi60i82-HJ8uSsjZCwnsrXSvvj8"
+TOKEN = "1319195477:AAHRZ3UEQQUKETti88QEuncJgmuD8HRiKUY"
 APPNAME = "https://kibot-telegram-bot.herokuapp.com/"
