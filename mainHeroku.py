@@ -170,7 +170,7 @@ def dente (update, context):
     while True:
         foto = random.choice(list(dente_fotos.keys()))
         if len(dente_fotos.keys()) == len(sent_images):
-            sent_images = set()
+            sent_images.clear()
         if foto not in sent_images:
             sent_images.add(foto)
             break
