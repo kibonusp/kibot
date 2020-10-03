@@ -226,6 +226,7 @@ webcafune - /webcafune [PESSOA]
 webabraco - /webabraco [PESSOA]
 webbeijo - /webbeijo [PESSOA]
 websexo - /websexo [PESSOA]
+dente - /dente
 '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
