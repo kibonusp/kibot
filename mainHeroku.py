@@ -179,10 +179,16 @@ def websexo (update, context):
         "{}: NÃO TÁ😭 ".format(comido)]
         for message in messages:
             context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-            sleep(4)
+            sleep(1.5)
     else:
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+def dentista (update, context):
+    image = "./Dentista/"
+    image += random.choice(os.listdir(image))
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, 'rb'))
+
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
@@ -205,6 +211,7 @@ def main():
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
+    dp.add_handler(CommandHandler('dentista', dentista))
 
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)

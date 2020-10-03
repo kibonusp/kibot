@@ -96,7 +96,7 @@ def parceiroMBTI (update, context, mbtiList):
 def furry (update, context):
     image = "./Furry Images/"
     image += random.choice(os.listdir(image))
-    context.bot.sendPhoto (chat_id=update.message.chat_id, photo=open(image, 'rb'))
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, 'rb'))
 
 def chunks(l, n):
     for i in range(0, len(l), n):
