@@ -6,7 +6,6 @@ import os
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
-    print("Oi, que casada você vai querer comer hoje?")
 
 def createOrFindUser (username, userID):
     conn = sqlite3.connect('userInfo')
