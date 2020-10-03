@@ -123,7 +123,7 @@ def pingpong(update, context):
     arquivoJSON = arquivos[0]
     arquivoPing = arquivos[1]
     arquivoPong = arquivos[2]
-    listaMensagens = loadJSON(arquivoJSON)
+    listaMensagens = loadJSON(str(arquivoJSON))
     listaJogadores = update.message.text.split()[1:]
     if len(listaJogadores) < 2 or len(listaJogadores) > 2:
         mensagemEnviar = listaMensagens[5]
@@ -136,14 +136,14 @@ def pingpong(update, context):
         while not vitoria and rodadas < 10:
             #round ping
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(arquivoPing, 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(str(arquivoPing), 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pingJogador
             time.sleep(random.uniform(0,1))
             #round pong
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(arquivoPong, 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(str(arquivoPong), 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pongJogador
