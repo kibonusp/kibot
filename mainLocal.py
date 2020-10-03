@@ -18,13 +18,10 @@ def createOrFindUser (username, userID):
     cur = conn.cursor()
 
     cur.execute("SELECT username FROM Users WHERE id = (?)", (userID,))
-    userTuple = cur.fetchall()
-    if list(userTuple[0])[0]:
-        userAchado = True
-    else:
-        userAchado = False
-    if userAchado:
-        cur.execute("INSERT INTO Users(id, username) VALUES (?, ?)", (userID, username))
+    user = cur.fetchall()
+
+    if not user:
+        cur.execute("INSERT INTO Users(id, username) VALUES     (%s, %s)", (userID, username))
         print("Usuário novo adicionado: {}".format(username))
     else:
         print("Usuário encontrado: {}".format(username))
