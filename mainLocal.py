@@ -294,6 +294,7 @@ audio - /audio
 help - /help
 ping - /ping
 pong - /pong
+pingpong - /pingpong [PESSOA1] [PESSOA2]
 cancelado - /cancelado [NOME]
 webcafune - /webcafune [PESSOA]
 webabraco - /webabraco [PESSOA]
