@@ -3,7 +3,7 @@ import logging
 import random
 import sqlite3
 import os
-from informacoes.py import TOKEN
+from informacoes import TOKEN
 from time import sleep
 
 DATABASE = "fuvest"
@@ -97,7 +97,7 @@ def parceiroMBTI (update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
-        
+
 def furry (update, context):
     image = "./Furry Images/"
     image += random.choice(os.listdir(image))
