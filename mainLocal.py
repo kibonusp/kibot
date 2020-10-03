@@ -6,6 +6,8 @@ import os
 from dentes import dente_fotos
 from informacoes import TOKEN
 from time import sleep
+import json
+import time
 
 DATABASE = "fuvest"
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
