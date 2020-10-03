@@ -3,7 +3,7 @@ import logging
 import random
 from databaseManager import DBM
 import os
-from dente import dente_fotos
+from dentes import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
 
