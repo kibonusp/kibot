@@ -160,6 +160,7 @@ def mensagemvitoria(rodadas, vitoriaPartida, vitoriaJogador, listaMensagens):
         mensagemEnviar = "{}{}".format(listaMensagens[2], vitoriaJogador)
     else:
         mensagemEnviar = "{}{}".format(listaMensagens[3], vitoriaJogador)
+    return mensagemEnviar
         
 def pingpong(update, context):
     listaMensagens = loadJSON("ping_pong_mensagens.json")
