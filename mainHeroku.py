@@ -94,11 +94,11 @@ def audio (update, context):
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
 def ping (update, context):
-    ping = "./Ping Pong/ping.mp3"
+    ping = "./Ping Pong/ping.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
 
 def pong (update, context):
-    pong = "./Ping Pong/pong.mp3"
+    pong = "./Ping Pong/pong.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
 
 def loadJSON(nomeArquivo):
@@ -132,14 +132,14 @@ def pingpong(update, context):
         while not vitoria and rodadas < 10:
             #round ping
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/ping.mp3", 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/ping.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pingJogador
             time.sleep(random.uniform(0,1))
             #round pong
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/pong.mp3", 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/pong.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pongJogador
@@ -276,7 +276,7 @@ def main():
     dp.add_handler(CommandHandler('help', ajuda))
     dp.add_handler(CommandHandler('ping', ping))
     dp.add_handler(CommandHandler('pong', pong))
-    dp.add_handler(CommandHandler("pingpong", pingpong))
+    dp.add_handler(CommandHandler('pingpong', pingpong))
     dp.add_handler(CommandHandler('cancelado', cancelado))
     dp.add_handler(CommandHandler('webabraco', webabraco))
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
