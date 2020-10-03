@@ -6,6 +6,8 @@ import os
 from dentes import dente_fotos
 from informacoes import TOKEN
 from time import sleep
+import speech_recognition as sr
+import subprocess
 import json
 import time
 
@@ -283,6 +285,22 @@ def dente (update, context):
     if eh_audio:
         context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
+def traduz (update, context):
+    audio  = context.bot.getFile(update.message.reply_to_message.voice)
+    ogg = 'audio.ogg'
+    wav = 'audio.wav'
+    audio.download(ogg)
+    process = subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
+
+    r = sr.Recognizer()
+    
+    with sr.WavFile(wav) as source:
+        with sr.AudioFile(wav) as source:
+            voice = r.record(source)
+            frase = r.recognize_google(voice, language= 'pt-BR')
+            context.bot.send_message(chat_id=update.effective_chat.id, text=frase)
+
+
 def ajuda (update, context):
     helpText = '''start - /start
 mbti - /mbti [MBTI]
@@ -325,6 +343,7 @@ def main():
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
     dp.add_handler(CommandHandler('dente', dente))
+    dp.add_handler(CommandHandler('traduz', traduz))
 
     updater.start_polling()
     updater.idle()
