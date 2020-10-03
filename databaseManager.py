@@ -7,7 +7,7 @@ class DBM:
         self.cur = self.conn.cursor()
     
     def createOrFindUser(self, username, userID):
-        self.cur.execute("SELECT username FROM Users WHERE id = (%s)",   (userID,))
+        self.cur.execute("SELECT username FROM Users WHERE id = (%s)", (userID,))
         user = self.cur.fetchall()
         if not user:
             self.cur.execute("INSERT INTO Users(id, username) VALUES     (%s, %s)", (userID, username))
