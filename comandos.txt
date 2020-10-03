@@ -7,6 +7,7 @@ dividegrupos - Divide pessoas em grupos
 audio - Áudios engraçados
 ping - Manda um ping
 pong - Manda um pong
+pingpong - Partida emocionante de ping-pong
 cancelado - Cancela uma pessoa
 webcafune - Dá um cafuné em alguéme
 webabraco - Dá um abraço em alguém
