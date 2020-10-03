@@ -3,7 +3,7 @@ import logging
 import random
 from databaseManager import DBM
 import os
-from dente import dente_fotos
+from dentes import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
 
@@ -30,10 +30,9 @@ def mbti(update, context):
 def casalMBTI(update, context):
     response = list()
     companions = dbm.findMbtiCouples(response, update.effective_user.username, update.effective_user.id)
-    
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
-  
+    
     return companions
 
 def casalpossivel(update, context):
@@ -42,8 +41,9 @@ def casalpossivel(update, context):
         companionList = "Lista de Companheiros:"
         for companion in companions:
             companionList += "\n\t{}".format(companion)
-    else:
         context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
 def parceiroMBTI(update, context):
     companions = casalMBTI(update, context)
@@ -81,7 +81,7 @@ def dividegrupos (update, context):
             mensagem = "Grupos:\n"
             for posGrupo, grupo in enumerate(listaGrupos):
                 mensagem += "\tGrupo {}:".format(posGrupo)
-                for integrante in grupo:
+                for integrante in grupo:deixando as fotos de dentes aleatorias
                     mensagem += " "+integrante
                 mensagem += '\n'
             context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem)
@@ -167,7 +167,6 @@ def websexo (update, context):
 sent_images = set()
 def dente (update, context):
     imagem = "./Odontologia/"
-
     while True:
         foto = random.choice(list(dente_fotos.keys()))
         if len(dente_fotos.keys()) == len(sent_images):
@@ -175,8 +174,9 @@ def dente (update, context):
         if foto not in sent_images:
             sent_images.add(foto)
             break
-        
+   
     eh_audio = False 
+    
     if foto == "suga" or foto == "motorzim":
         audio = "./Audio-dente/"
         audio += random.choice(list(dente_fotos[foto]["audio"].values()))
