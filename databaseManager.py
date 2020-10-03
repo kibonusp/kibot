@@ -25,7 +25,7 @@ class DBM:
     
     def findMbtiCouples(self, response, username, userId):
         casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
-                "ISTJ": "ESFP", "ISTJ":"ESFP",
+                "ISTJ": "ESFP", "ESFP":"ISTJ",
                 "INFP": "ENFJ", "ENFJ":"INFP",
                 "INTP": "ENTJ", "ENTJ": "INTP",
                 "ESTP": "ISFJ", "ISFJ": "ESTP",
