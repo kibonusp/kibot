@@ -68,14 +68,16 @@ def casalMBTI (update, context):
     if not userMbtiTuple:
         print("Usuário @{} não cadastrado".format(update.effective_user.username,))
         response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(update.effective_user.id,))
-    else:
-        userMbti = list(userMbtiTuple[0])[0]
-        cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
-        matches = cur.fetchall()
-        for user in matches:
-            formatedCompanion = ''.join(map(str,user[0]))
-            companions.append(formatedCompanion)
-        conn.commit()
+        return companions
+
+    userMbti = list(userMbtiTuple[0])[0]
+    cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
+    matches = cur.fetchall()
+    for user in matches:
+        formatedCompanion = ''.join(map(str,user[0]))
+        companions.append(formatedCompanion)
+    conn.commit()
+
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
     return companions
@@ -86,6 +88,7 @@ def casalpossivel (update, context):
         companionList = "Lista de Companheiros:"
         for companion in companions:
             companionList += "\n\t{}".format(companion)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
