@@ -3,11 +3,11 @@ import logging
 import random
 from databaseManager import DBM
 import os
-import json
-import time
 from dente import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
+import json
+import time
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
