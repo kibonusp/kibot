@@ -187,7 +187,7 @@ def websexo (update, context):
 def dentista (update, context):
     image = "./Dentista/"
     image += random.choice(os.listdir(image))
-    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, 'rb'))
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, 'rb'), caption="OI")
 
 
 def main():
