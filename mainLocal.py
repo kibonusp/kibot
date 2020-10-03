@@ -3,7 +3,7 @@ import logging
 import random
 import sqlite3
 import os
-
+from dentes import dente_fotos
 from informacoes import TOKEN
 from time import sleep
 
@@ -211,6 +211,32 @@ def websexo (update, context):
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
+sent_images = set()
+def dente (update, context):
+    imagem = "./Odontologia/"
+    while True:
+        foto = random.choice(list(dente_fotos.keys()))
+        if len(dente_fotos.keys()) == len(sent_images):
+            sent_images = set()
+        if foto not in sent_images:
+            sent_images.add(foto)
+            break
+   
+    eh_audio = False 
+    
+    if foto == "suga" or foto == "motorzim":
+        audio = "./Audio-dente/"
+        audio += random.choice(list(dente_fotos[foto]["audio"].values()))
+        eh_audio = True
+    
+    imagem += dente_fotos[foto]["arquivo"]
+    legenda = dente_fotos[foto]["legenda"]
+
+    context.bot.sendPhoto(chat_id = update.message.chat_id, photo = open(imagem, "rb"), caption = legenda, parse_mode = "html")
+    
+    if eh_audio:
+        context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
+
 def ajuda (update, context):
     helpText = '''start - /start
 mbti - /mbti [MBTI]
@@ -250,6 +276,7 @@ def main():
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
+    dp.add_handler(CommandHandler('dente', dente))
 
     updater.start_polling()
     updater.idle()

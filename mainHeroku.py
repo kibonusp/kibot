@@ -81,7 +81,7 @@ def dividegrupos (update, context):
             mensagem = "Grupos:\n"
             for posGrupo, grupo in enumerate(listaGrupos):
                 mensagem += "\tGrupo {}:".format(posGrupo)
-                for integrante in grupo:
+                for integrante in grupo:deixando as fotos de dentes aleatorias
                     mensagem += " "+integrante
                 mensagem += '\n'
             context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem)
@@ -164,17 +164,18 @@ def websexo (update, context):
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
         
-imagem_dente = list()
+sent_images = set()
 def dente (update, context):
     imagem = "./Odontologia/"
-    foto = random.choice(list(dente_fotos.keys()))
-    imagem_dente.append(foto)
-    
-    if imagem_dente[len(imagem_dente)- 2] == foto:
-        foto = random.choice(list(dente_fotos.keys()))    
-
-    foto = random.choice(list(dente_fotos.keys()))
-    eh_audio = False
+    while True:
+        foto = random.choice(list(dente_fotos.keys()))
+        if len(dente_fotos.keys()) == len(sent_images):
+            sent_images = set()
+        if foto not in sent_images:
+            sent_images.add(foto)
+            break
+   
+    eh_audio = False 
     
     if foto == "suga" or foto == "motorzim":
         audio = "./Audio-dente/"
