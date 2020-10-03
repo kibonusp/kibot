@@ -87,7 +87,7 @@ def casalpossivel (update, context):
         for companion in companions:
             companionList += "\n\t{}".format(companion)
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
 def parceiroMBTI (update, context):
     companions = casalMBTI(update, context)
