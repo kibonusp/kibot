@@ -6,6 +6,8 @@ import os
 from dentes import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
+import json
+import time
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -98,6 +100,58 @@ def ping (update, context):
 def pong (update, context):
     pong = "./Ping Pong/pong.mp3"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
+
+def loadJSON(nomeArquivo):
+    with open(nomeArquivo, "rb")as arquivo:
+        return json.load(arquivo)
+
+def mensagemvitoria(rodadas, vitoriaPartida, vitoriaJogador, listaMensagens):
+    if not vitoriaPartida:
+        mensagemEnviar = listaMensagens[4]
+    elif rodadas <= 3:
+        mensagemEnviar = "{}{}".format(listaMensagens[0], vitoriaJogador)
+    elif rodadas > 3 and rodadas <= 6:
+        mensagemEnviar = "{}{}".format(listaMensagens[1], vitoriaJogador)
+    elif rodadas > 6 and rodadas <= 8:
+        mensagemEnviar = "{}{}".format(listaMensagens[2], vitoriaJogador)
+    else:
+        mensagemEnviar = "{}{}".format(listaMensagens[3], vitoriaJogador)
+    return mensagemEnviar
+
+def pingpong(update, context):
+    arquivos = loadJSON("arquivos.json")
+    arquivoJSON = arquivos[0]
+    arquivoPing = arquivos[1]
+    arquivoPong = arquivos[2]
+    listaMensagens = loadJSON(arquivoJSON)
+    listaJogadores = update.message.text.split()[1:]
+    if len(listaJogadores) < 2 or len(listaJogadores) > 2:
+        mensagemEnviar = listaMensagens[5]
+    else:
+        defineLados = random.randint(0,1)
+        pingJogador = listaJogadores[defineLados]
+        pongJogador = listaJogadores[1-defineLados]
+        rodadas = 0
+        vitoria = False
+        while not vitoria and rodadas < 10:
+            #round ping
+            if not vitoria:
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(arquivoPing, 'rb'))
+                if random.randint(0,10) == 1:
+                    vitoria = True
+                    vitoriaJogador = pingJogador
+            time.sleep(random.uniform(0,1))
+            #round pong
+            if not vitoria:
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(arquivoPong, 'rb'))
+                if random.randint(0,10) == 1:
+                    vitoria = True
+                    vitoriaJogador = pongJogador
+            time.sleep(random.uniform(0,1))
+            rodadas += 2
+        mensagemEnviar = mensagemvitoria(rodadas, vitoria, vitoriaJogador, listaMensagens)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=mensagemEnviar, reply_to_message_id=update.message.message_id)    
+
 
 def cancelado (update, context):
     cancelado = update.message.text.partition(' ')[2]
@@ -226,6 +280,7 @@ def main():
     dp.add_handler(CommandHandler('help', ajuda))
     dp.add_handler(CommandHandler('ping', ping))
     dp.add_handler(CommandHandler('pong', pong))
+    dp.add_handler(CommandHandler("pingpong", pingpong))
     dp.add_handler(CommandHandler('cancelado', cancelado))
     dp.add_handler(CommandHandler('webabraco', webabraco))
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
