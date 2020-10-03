@@ -3,6 +3,7 @@ import logging
 import random
 import sqlite3
 import os
+
 from informacoes import TOKEN
 from time import sleep
 
