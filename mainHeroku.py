@@ -127,6 +127,7 @@ def pingpong(update, context):
         defineLados = random.randint(0,1)
         pingJogador = listaJogadores[defineLados]
         pongJogador = listaJogadores[1-defineLados]
+        vitoriaJogador = pingJogador
         rodadas = 0
         vitoria = False
         while not vitoria and rodadas < 10:
