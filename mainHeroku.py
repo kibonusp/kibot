@@ -30,10 +30,9 @@ def mbti(update, context):
 def casalMBTI(update, context):
     response = list()
     companions = dbm.findMbtiCouples(response, update.effective_user.username, update.effective_user.id)
-    
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
-  
+    
     return companions
 
 def casalpossivel(update, context):
@@ -42,6 +41,7 @@ def casalpossivel(update, context):
         companionList = "Lista de Companheiros:"
         for companion in companions:
             companionList += "\n\t{}".format(companion)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 

@@ -1,6 +1,5 @@
 import psycopg2 as psql
 
-
 class DBM:
     ''' Instance of a Database Manager '''
     def __init__(self, DATABASE_URL):
