@@ -174,12 +174,12 @@ def dente (update, context):
         foto = random.choice(list(dente_fotos.keys()))    
 
     foto = random.choice(list(dente_fotos.keys()))
-    eh_audio = 0 
+    eh_audio = False
     
     if foto == "suga" or foto == "motorzim":
         audio = "./Audio-dente/"
         audio += random.choice(list(dente_fotos[foto]["audio"].values()))
-        eh_audio = 1
+        eh_audio = True
     
     imagem += dente_fotos[foto]["arquivo"]
     legenda = dente_fotos[foto]["legenda"]
