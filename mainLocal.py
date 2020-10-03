@@ -203,7 +203,7 @@ def websexo (update, context):
         "{}: NÃO TÁ😭 ".format(comido)]
         for message in messages:
             context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-            sleep(4)
+            sleep(1.5)
     else:
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
@@ -213,8 +213,8 @@ def dente (update, context):
     imagem = "./Odontologia/"
     while True:
         foto = random.choice(list(dente_fotos.keys()))
-        if len(dente_fotos.keys()) == len(sent_images):
-            sent_images = set()
+        if not sent_images.difference(dente_fotos.keys()):
+            sent_images.clear()
         if foto not in sent_images:
             sent_images.add(foto)
             break
