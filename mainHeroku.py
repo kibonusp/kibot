@@ -81,7 +81,7 @@ def dividegrupos (update, context):
             mensagem = "Grupos:\n"
             for posGrupo, grupo in enumerate(listaGrupos):
                 mensagem += "\tGrupo {}:".format(posGrupo)
-                for integrante in grupo:deixando as fotos de dentes aleatorias
+                for integrante in grupo:
                     mensagem += " "+integrante
                 mensagem += '\n'
             context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem)
