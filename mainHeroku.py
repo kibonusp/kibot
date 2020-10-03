@@ -3,6 +3,7 @@ import logging
 import random
 from databaseManager import DBM
 import os
+from dente import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
 
@@ -183,6 +184,32 @@ def websexo (update, context):
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
+imagem_dente = list()
+def dente (update, context):
+    imagem = "./Odontologia/"
+    foto = random.choice(list(dente_fotos.keys()))
+    imagem_dente.append(foto)
+    
+    if imagem_dente[len(imagem_dente)- 2] == foto:
+        foto = random.choice(list(dente_fotos.keys()))    
+
+    foto = random.choice(list(dente_fotos.keys()))
+    eh_audio = 0 
+    
+    if foto == "suga" or foto == "motorzim":
+        audio = "./Audio-dente/"
+        audio += random.choice(list(dente_fotos[foto]["audio"].values()))
+        eh_audio = 1
+    
+    imagem += dente_fotos[foto]["arquivo"]
+    legenda = dente_fotos[foto]["legenda"]
+
+    context.bot.sendPhoto(chat_id = update.message.chat_id, photo = open(imagem, "rb"), caption = legenda, parse_mode = "html")
+    
+    if eh_audio:
+        context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
+
+
 def main():
     PORT = int(os.environ.get('PORT', 5000))
     
@@ -204,7 +231,8 @@ def main():
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
-
+    dp.add_handler(CommandHandler('dente', dente))
+    
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
     updater.idle()

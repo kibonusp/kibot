@@ -3,7 +3,6 @@ import logging
 import random
 import sqlite3
 import os
-from informacoes.py import TOKEN
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
@@ -164,6 +163,7 @@ def cancelado (update, context):
     else:
         message =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
 
 def main():
     mbtiList = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
