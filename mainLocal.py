@@ -290,7 +290,7 @@ def traduz (update, context):
     ogg = 'audio.ogg'
     wav = 'audio.wav'
     audio.download(ogg)
-    process = subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
+    subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
 
     r = sr.Recognizer()
     
