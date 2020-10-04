@@ -297,7 +297,7 @@ def traduz (update, context):
     with sr.WavFile(wav) as source:
         with sr.AudioFile(wav) as source:
             voice = r.record(source)
-            frase = r.recognize_google(voice, language= 'pt-BR')
+            frase = r.recognize_google(voice, language= 'pt-PT', show_all=True)
             context.bot.send_message(chat_id=update.effective_chat.id, text=frase)
 
 

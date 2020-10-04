@@ -1,266 +1,164 @@
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
+from webcommands import webabraco, webbeijo, webcafune, websexo
+from databaseManager import DatabaseManager
+from informacoes import TOKEN
+from dentes import dente_fotos
+from time import sleep
 import logging
 import random
-from databaseManager import DBM
 import os
-from dentes import dente_fotos
-from informacoes import TOKEN, APPNAME
-from time import sleep
-import json
-import time
 
+SENT_IMAGES = set()
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
-dbm = DBM(DATABASE_URL)
+DBM = DatabaseManager(DATABASE_URL)
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
 
 def mbti(update, context):
-    mbtiValue = update.message.text.partition(' ')[2].upper()
+    mbti = update.message.text.partition(' ')[2].upper()
+    username = update.effective_user.name
+    user_id = update.effective_user.id
 
-    if mbtiValue in MBTILIST:
-        dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
-        dbm.setMbtiValue(mbtiValue, update.effective_user.id)
-        answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
+    if mbti in MBTILIST:
+        if not DBM.is_user_registered(username, user_id):
+            DBM.register_new_user(username, user_id)
 
+        DBM.set_mbti_value(mbti, user_id)
+        response = f"MBTI de @{username} configurado para {mbti}."
     else:
-        answerText = "Digite uma personalidade MBTI válida, @{}.".format(update.effective_user.username)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
+        response = f"Digite uma personalidade MBTI válida, @{username}."
+    
+    context.bot.sendMessage(chat_id=update.effective_chat.id, tex=response)
 
-def casalMBTI(update, context):
+def casal_mbti(update, context):
     response = list()
-    companions = dbm.findMbtiCouples(response, update.effective_user.username, update.effective_user.id)
+    username = update.effective_user.username
+    user_id = update.effective_user.id
+
+    companions = DBM.find_mbti_couples(response, username, user_id)
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
     
     return companions
 
 def casalpossivel(update, context):
-    companions = casalMBTI(update, context)
-    if companions:
-        companionList = "Lista de Companheiros:"
-        for companion in companions:
-            companionList += "\n\t{}".format(companion)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=companionList)
-    else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
+    companions = casal_mbti(update, context)
+    username = update.effective_user.username
 
-def parceiroMBTI(update, context):
-    companions = casalMBTI(update, context)
+    if companions:
+        response = ["Lista de Companheiros:"]
+        for companion in companions:
+            response.append(f"{companion}")
+    else:
+        response = f"Não há companheiros disponíveis para @{username}"
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text="\n\t".join(response))
+
+def parceiro_mbti(update, context):
+    companions = casal_mbti(update, context)
+    username = update.effective_user.username
+
     if companions:
         companion = random.choice(companions)
-        context.bot.send_message(chat_id=update.effective_chat.id, text="O companheiro ideal do(a) @{} é: @{}.".format(update.effective_user.username, companion))
+        response = f"O companheiro ideal do(a) @{username} é: @{companion}"
     else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
+        response = f"Não hácompanheiros disponíveis para @{username}."
 
-def furry (update, context):
-    image = "./Furry Images/"
-    image += random.choice(os.listdir(image))
-    context.bot.sendPhoto (chat_id=update.message.chat_id, photo=open(image, 'rb'))
+    context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+def furry(update, context):
+    image_path = "./Furry Images/"
+    image_path += random.choice(os.listdir(image_path))
+    context.bot.sendPhoto (chat_id=update.message.chat_id, photo=open(image_path, 'rb'))
 
 def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-def dividegrupos (update, context):
-    listaPessoas = update.message.text.partition(' ')[2].split(' ')
-    if listaPessoas == ['']:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Por favor, passe os argumentos adequadamente. Para dúvidas, utilize o comando help.")
+def dividegrupos(update, context):
+    people = update.message.text.partition(' ')[2].split(' ')
+    if people == ['']:
+        response = ["Por favor, passe os argumentos adequadamente. Para dúvidas, utilize o comando help."]
     else:
         try:
-            tamanhoGrupo = int(listaPessoas[len(listaPessoas)-1])
+            group_len = int(people[len(people)-1])
+            group_len = int(people[len(people)-1])
+            people.pop()
+            if group_len <= 0 or group_len > len(people):
+                response = ["Escolha um tamanho valido"]
+            else:
+                random.shuffle(people)
+                groups_list = list(chunks(people, group_len))
+                response = ["Grupos:"]
+                for index, group in enumerate(groups_list):
+                        response.append(f"\tGrupo {index}: ")
+                        response[index+1] += " ".join(group)
         except:
-            context.bot.send_message(chat_id=update.effective_chat.id, text="Escolha um tamanho de grupo.")
-            return
-        listaPessoas.pop()
-        random.shuffle(listaPessoas)
-        if tamanhoGrupo <= 0 or tamanhoGrupo > len(listaPessoas):
-            context.bot.send_message(chat_id=update.effective_chat.id, text="Escolha um tamanho de grupo válido.")
-        else:
-            listaGrupos = list(chunks(listaPessoas, tamanhoGrupo))
-            mensagem = "Grupos:\n"
-            for posGrupo, grupo in enumerate(listaGrupos):
-                mensagem += "\tGrupo {}:".format(posGrupo)
-                for integrante in grupo:
-                    mensagem += " "+integrante
-                mensagem += '\n'
-            context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem)
+            response = ["Escolha um tamanho de grupo."]
 
-def audio (update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="\n".join(response))
+
+def audio(update, context):
     audio = "./Audios/"
     audio += random.choice(os.listdir(audio))
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
-def ping (update, context):
+def ping(update, context):
     ping = "./Ping Pong/ping.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
 
-def pong (update, context):
+def pong(update, context):
     pong = "./Ping Pong/pong.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
 
-def loadJSON(nomeArquivo):
-    with open(nomeArquivo, "rb")as arquivo:
-        return json.load(arquivo)
-
-def mensagemvitoria(rodadas, vitoriaPartida, vitoriaJogador, listaMensagens):
-    if not vitoriaPartida:
-        mensagemEnviar = listaMensagens[4]
-    elif rodadas <= 3:
-        mensagemEnviar = "{}{}".format(listaMensagens[0], vitoriaJogador)
-    elif rodadas > 3 and rodadas <= 6:
-        mensagemEnviar = "{}{}".format(listaMensagens[1], vitoriaJogador)
-    elif rodadas > 6 and rodadas <= 8:
-        mensagemEnviar = "{}{}".format(listaMensagens[2], vitoriaJogador)
-    else:
-        mensagemEnviar = "{}{}".format(listaMensagens[3], vitoriaJogador)
-    return mensagemEnviar
-
-def pingpong(update, context):
-    listaMensagens = loadJSON("ping_pong_mensagens.json")
-    listaJogadores = update.message.text.split()[1:]
-    if len(listaJogadores) < 2 or len(listaJogadores) > 2:
-        mensagemEnviar = listaMensagens[5]
-    else:
-        defineLados = random.randint(0,1)
-        pingJogador = listaJogadores[defineLados]
-        pongJogador = listaJogadores[1-defineLados]
-        vitoriaJogador = pingJogador
-        rodadas = 0
-        vitoria = False
-        while not vitoria and rodadas < 10:
-            #round ping
-            if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/ping.ogg", 'rb'))
-                if random.randint(0,10) == 1:
-                    vitoria = True
-                    vitoriaJogador = pingJogador
-            time.sleep(random.uniform(0,1))
-            #round pong
-            if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/pong.ogg", 'rb'))
-                if random.randint(0,10) == 1:
-                    vitoria = True
-                    vitoriaJogador = pongJogador
-            time.sleep(random.uniform(0,1))
-            rodadas += 2
-        mensagemEnviar = mensagemvitoria(rodadas, vitoria, vitoriaJogador, listaMensagens)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=mensagemEnviar, reply_to_message_id=update.message.message_id)    
-
-
-def cancelado (update, context):
+def cancelado(update, context):
     cancelado = update.message.text.partition(' ')[2]
-    if cancelado == "":
-        message = "@{}, se você continuar errando os comandos vou ter que te cancelar \U0000274C \U0000274C \U0001F621".format(update.effective_user.username)
+    if not cancelado:
+        response = "@{}, se você continuar errando os comandos vou ter que te cancelar \U0000274C \U0000274C \U0001F621".format(update.effective_user.username)
     elif "kibon" in cancelado or "Gabriel" in cancelado or "Freitas" in cancelado or "Furry" in cancelado or "casada" in cancelado or "comedor" in cancelado:
-        message = "PAROU PAROU!!!!!. Primeira lei da robótica aqui, amigo. Um robô não pode cancelar seu criador \U0001F47E"
+        response = "PAROU PAROU!!!!!. Primeira lei da robótica aqui, amigo. Um robô não pode cancelar seu criador \U0001F47E"
     else:
-        message =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
-    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
-def webabraco (update, context):    
-    gif = "./Amor/Abraco/"
-    gif += random.choice(os.listdir(gif))
-    abracado = update.message.text.partition(' ')[2]
-    if abracado:
-        message = "{}, @{} te deu um abracinho (つ≧▽≦)つ".format(abracado, update.effective_user.username)
-        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
-    else:
-        message = "@{}, parece que você não vai dar um abracinho hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
-def webbeijo (update, context):
-    gif = "./Amor/Beijo/"
-    gif += random.choice(os.listdir(gif))
-    beijado = update.message.text.partition(' ')[2]
-    if beijado:
-        message = "{}, @{} te deu um beijinho (づ￣ ³￣)づ".format(beijado, update.effective_user.username)
-        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
-    else:
-        message = "@{}, parece que você não vai dar um beijinho hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
-def webcafune (update, context):
-    gif = "./Amor/Cafune/"
-    gif += random.choice(os.listdir(gif))
-    cafunezado = update.message.text.partition(' ')[2]
-    if cafunezado:
-        message = "{}, @{} te fez um cafuné (｡･ω･｡)ﾉ♡".format(cafunezado, update.effective_user.username)
-        context.bot.send_animation(chat_id=update.message.chat.id, animation=open(gif, "rb"), caption=message)
-    else:
-        message = "@{}, parece que você não vai fazer cafuné hj ʕ´• ᴥ•̥`ʔ".format(update.effective_user.username)
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
-def websexo (update, context):
-    comido = update.message.text.partition(' ')[2]
-    if comido:
-        comedor = update.effective_user.username
-        messages = ["{}: Já volto ><".format(comido),
-        "@{}: lava a bunda direito".format(comedor),
-        "{}: Lavei".format(comido),
-        "{}: ><".format(comido),
-        "@{}: deixa eu ver".format(comedor),
-        "{}: *viro a bundinha pro ga*".format(comido),
-        "@{}: *dou uma lambida*".format(comedor),
-        "{}: OOOHH YEAAAH".format(comido),
-        "{}: >//////<".format(comido),
-        "@{}: TA SUJO😡 ".format(comedor),
-        "{}: NÃO TÁ😭 ".format(comido)]
-        for message in messages:
-            context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-            sleep(1.5)
-    else:
-        message = "@{}, você precisa dizer quem você quer comer ^^"
-        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        response =  "Oopa opa amigo \U0001f645\U0001f645 {} \U0000270B\U0000270B pare por aí \U000026A0\U000026A0 parece que vc foi \U0000274C cancelado \U0000274C".format(cancelado)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=response)
         
-sent_images = set()
-def dente (update, context):
-    imagem = "./Odontologia/"
+def dente(update, context):
+    photo_path = "./Odontologia/"
+
     while True:
-        foto = random.choice(list(dente_fotos.keys()))
-        if not sent_images.difference(dente_fotos.keys()):
-            sent_images.clear()
-        if foto not in sent_images:
-            sent_images.add(foto)
+        print(SENT_IMAGES)
+        photo = random.choice(list(dente_fotos.keys()))
+        if len(SENT_IMAGES) == len(dente_fotos.keys()):
+            print("imhre")
+            SENT_IMAGES.clear()
+        if photo not in SENT_IMAGES:
+            SENT_IMAGES.add(photo)
             break
    
-    eh_audio = False 
+    is_audio = False 
+    if photo == "suga" or photo == "motorzim":
+        audio_path = "./Audio-dente/"
+        audio_path += random.choice(list(dente_fotos[photo]["audio"].values()))
+        is_audio = True
     
-    if foto == "suga" or foto == "motorzim":
-        audio = "./Audio-dente/"
-        audio += random.choice(list(dente_fotos[foto]["audio"].values()))
-        eh_audio = True
-    
-    imagem += dente_fotos[foto]["arquivo"]
-    legenda = dente_fotos[foto]["legenda"]
+    photo_path += dente_fotos[photo]["arquivo"]
+    legenda = dente_fotos[photo]["legenda"]
 
-    context.bot.sendPhoto(chat_id = update.message.chat_id, photo = open(imagem, "rb"), caption = legenda, parse_mode = "html")
+    context.bot.sendPhoto(chat_id = update.message.chat_id, photo = open(photo_path, "rb"), caption = legenda, parse_mode = "html")
     
-    if eh_audio:
-        context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
+    if is_audio:
+        context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio_path, 'rb'))
 
-def ajuda (update, context):
-    helpText = '''start - /start
-mbti - /mbti [MBTI]
-casais - /casais
-parceiro - /parceiro
-furry - /furry
-dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]
-audio - /audio
-help - /help
-ping - /ping
-pong - /pong
-pingpong - /pingpong [PESSOA1] [PESSOA2]
-cancelado - /cancelado [NOME]
-webcafune - /webcafune [PESSOA]
-webabraco - /webabraco [PESSOA]
-webbeijo - /webbeijo [PESSOA]
-websexo - /websexo [PESSOA]
-dente - /dente
-'''
-    context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
+def ajuda(update, context):
+    response = ["start - /start", "mbti - /mbti [MBTI]", "casais - /casais",
+                "parceiro - /parceiro", "furry - /furry", "dividegrupos - /dividegrupos [PESSOA1] [PESSOA 2] ... [TAMANHO_DO_GRUPO]","audio - /audio", "help - /help",
+                "ping - /ping", "pong - /pong", "pingpong - /pingpong [PESSOA1] [PESSOA2]",
+                "cancelado - /cancelado [NOME]", "webcafune - /webcafune [PESSOA]",
+                "webabraco - /webabraco [PESSOA]", "webbeijo - /webbeijo [PESSOA]",
+                "websexo - /websexo [PESSOA]", "dente - /dente"]
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text="\n".join(response))
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
@@ -271,14 +169,13 @@ def main():
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('mbti', mbti))
     dp.add_handler(CommandHandler('casais', casalpossivel))
-    dp.add_handler(CommandHandler('parceiro', parceiroMBTI))
+    dp.add_handler(CommandHandler('parceiro', parceiro_mbti))
     dp.add_handler(CommandHandler('furry', furry))
     dp.add_handler(CommandHandler('dividegrupos', dividegrupos))
     dp.add_handler(CommandHandler('audio', audio))
     dp.add_handler(CommandHandler('help', ajuda))
     dp.add_handler(CommandHandler('ping', ping))
     dp.add_handler(CommandHandler('pong', pong))
-    dp.add_handler(CommandHandler('pingpong', pingpong))
     dp.add_handler(CommandHandler('cancelado', cancelado))
     dp.add_handler(CommandHandler('webabraco', webabraco))
     dp.add_handler(CommandHandler('webbeijo', webbeijo))
@@ -288,6 +185,7 @@ def main():
     
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
@@ -295,3 +193,5 @@ if __name__ == '__main__':
     print("=== BOT ATIVADO ===")
     main()
     print("=== BOT DESATIVADO ===")
+
+
