@@ -4,7 +4,7 @@ import random
 import sqlite3
 import os
 from dentes import dente_fotos
-# from informacoes import TOKEN
+from informacoes import TOKEN
 from time import sleep
 import speech_recognition as sr
 import subprocess
@@ -12,7 +12,6 @@ import json
 import time
 from sorvetes import iceCreamImages
 
-TOKEN = "1140857640:AAGEEX5lP5uIxcJxxSAGPIT4HVO87i8Bxrg"
 DATABASE = "fuvest"
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 
