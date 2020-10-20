@@ -7,8 +7,9 @@ from dentes import dente_fotos
 from informacoes import TOKEN, APPNAME
 from time import sleep
 import json
-import time
 from sorvetes import iceCreamImages
+import speech_recognition as sr
+import ffmpeg
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -138,14 +139,14 @@ def pingpong(update, context):
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pingJogador
-            time.sleep(random.uniform(0,1))
+            sleep(random.uniform(0,1))
             #round pong
             if not vitoria:
                 context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/pong.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pongJogador
-            time.sleep(random.uniform(0,1))
+            sleep(random.uniform(0,1))
             rodadas += 2
         mensagemEnviar = mensagemvitoria(rodadas, vitoria, vitoriaJogador, listaMensagens)
     context.bot.send_message(chat_id=update.effective_chat.id, text=mensagemEnviar, reply_to_message_id=update.message.message_id)    
@@ -242,13 +243,16 @@ def dente (update, context):
     if eh_audio:
         context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
-"""
 def traduz (update, context):
     audio  = context.bot.getFile(update.message.reply_to_message.voice)
-    ogg = './Audios/audio.ogg'
-    wav = './Audios/audio.wav'
+    ogg = "Audios/audio.ogg"
+    wav = "Audios/audio.wav"
     audio.download(ogg)
-    process = subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
+
+    stream = ffmpeg.input(ogg)
+    stream = ffmpeg.output(stream, wav)
+    stream = ffmpeg.overwrite_output(stream)
+    ffmpeg.run(stream)
 
     r = sr.Recognizer()
     
@@ -257,7 +261,6 @@ def traduz (update, context):
             voice = r.record(source)
             frase = r.recognize_google(voice, language= 'pt-BR')
             context.bot.send_message(chat_id=update.effective_chat.id, text=frase)
-"""
 
 def ajuda (update, context):
     helpText = '''start - /start
@@ -277,6 +280,7 @@ webabraco - /webabraco [PESSOA]
 webbeijo - /webbeijo [PESSOA]
 websexo - /websexo [PESSOA]
 dente - /dente
+traduz - /traduz *Marque um áudio*
 '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
@@ -310,8 +314,8 @@ def main():
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
     dp.add_handler(CommandHandler('dente', dente))
-    # dp.add_handler(CommandHandler('traduz', traduz))
     dp.add_handler(CommandHandler('kibon', kibon))
+    dp.add_handler(CommandHandler('traduz', traduz))
     
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
