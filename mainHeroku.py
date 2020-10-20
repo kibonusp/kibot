@@ -1,13 +1,13 @@
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHandler, Filters
 import logging
 import random
-from Utils.databaseManager import DBM
+from Libraries.databaseManager import DBM
 import os
-from Utils.dentes import dente_fotos
-from Utils.informacoes import TOKEN, APPNAME
+from Libraries.dentes import dente_fotos
+from Libraries.informacoes import TOKEN, APPNAME
 from time import sleep
 import json
-from Utils.sorvetes import iceCreamImages
+from Libraries.sorvetes import iceCreamImages
 import speech_recognition as sr
 import ffmpeg
 
@@ -59,7 +59,7 @@ def parceiroMBTI(update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
 def furry (update, context):
-    image = "./Furry Images/"
+    image = "./CommandFolders/Furry Images/"
     image += random.choice(os.listdir(image))
     context.bot.sendPhoto (chat_id=update.message.chat_id, photo=open(image, 'rb'))
 
@@ -92,7 +92,7 @@ def dividegrupos (update, context):
             context.bot.send_message(chat_id=update.effective_chat.id, text=mensagem)
 
 def audio (update, context):
-    audio = "./Audios/"
+    audio = "./CommandFolders/Audios/"
     audioFile = ""
     while audioFile not in NOTFUNNYAUDIOS:
         audioFile = random.choice(os.listdir(audio))
@@ -100,11 +100,11 @@ def audio (update, context):
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
 def ping (update, context):
-    ping = "./Audios/ping.ogg"
+    ping = "./CommandFolders/Audios/ping.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
 
 def pong (update, context):
-    pong = "./Audios/pong.ogg"
+    pong = "./CommandFolders/Audios/pong.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
 
 def loadJSON(nomeArquivo):
@@ -139,14 +139,14 @@ def pingpong(update, context):
         while not vitoria and rodadas < 10:
             #round ping
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Audios/ping.ogg", 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./CommandFolders/Audios/ping.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pingJogador
             sleep(random.uniform(0,1))
             #round pong
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Audios/pong.ogg", 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./CommandFolders/Audios/pong.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pongJogador
@@ -167,7 +167,7 @@ def cancelado (update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def webabraco (update, context):    
-    gif = "./Amor/Abraco/"
+    gif = "./CommandFolders/Amor/Abraco/"
     gif += random.choice(os.listdir(gif))
     abracado = update.message.text.partition(' ')[2]
     if abracado:
@@ -178,7 +178,7 @@ def webabraco (update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def webbeijo (update, context):
-    gif = "./Amor/Beijo/"
+    gif = "./CommandFolders/Amor/Beijo/"
     gif += random.choice(os.listdir(gif))
     beijado = update.message.text.partition(' ')[2]
     if beijado:
@@ -189,7 +189,7 @@ def webbeijo (update, context):
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
 def webcafune (update, context):
-    gif = "./Amor/Cafune/"
+    gif = "./CommandFolders/Amor/Cafune/"
     gif += random.choice(os.listdir(gif))
     cafunezado = update.message.text.partition(' ')[2]
     if cafunezado:
@@ -223,7 +223,7 @@ def websexo (update, context):
         
 sent_images = set()
 def dente (update, context):
-    imagem = "./Odontologia/"
+    imagem = "./CommandFolders/Odontologia/"
     while True:
         foto = random.choice(list(dente_fotos.keys()))
         if not sent_images.difference(dente_fotos.keys()):
@@ -235,7 +235,7 @@ def dente (update, context):
     eh_audio = False 
     
     if foto == "suga" or foto == "motorzim":
-        audio = "./Audio-dente/"
+        audio = "./CommandFolders/Audio-dente/"
         audio += random.choice(list(dente_fotos[foto]["audio"].values()))
         eh_audio = True
     
@@ -249,8 +249,8 @@ def dente (update, context):
 
 def traduz (update, context):
     audio  = context.bot.getFile(update.message.reply_to_message.voice)
-    ogg = "Audios/audio.ogg"
-    wav = "Audios/audio.wav"
+    ogg = "CommandFolders/Audios/audio.ogg"
+    wav = "CommandFolders/Audios/audio.wav"
     audio.download(ogg)
 
     stream = ffmpeg.input(ogg)
@@ -290,7 +290,7 @@ traduz - /traduz *Marque um áudio*
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
 def kibon(update, context):
-    image = "./Sorvetes/"
+    image = "./CommandFolders/Sorvetes/"
     photo = random.choice(list(iceCreamImages.keys()))
     image += iceCreamImages[photo]["img"]
     caption = "<i>" + iceCreamImages[photo]["cap"] + "</i>"
