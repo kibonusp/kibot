@@ -7,10 +7,12 @@ dividegrupos - Divide pessoas em grupos
 audio - Áudios engraçados
 ping - Manda um ping
 pong - Manda um pong
-pingpong - Partida emocionante de ping-pong
+pingpong - Partida emocionante de ping-pong (by Pepe)
 cancelado - Cancela uma pessoa
-webcafune - Dá um cafuné em alguéme
+webcafune - Dá um cafuné em alguém
 webabraco - Dá um abraço em alguém
 webbeijo - Dá um beijo em alguém
 dente - Manda coisas de dente e "easter-eggs" (by Odonto)
+traduz - Converte um áudio marcado para texto (by Hiro)
+kibon - Manda picolés deliciosos da Kibon (by Vinho)
 help - Mostra como usar os comandos
