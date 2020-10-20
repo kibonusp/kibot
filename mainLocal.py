@@ -320,6 +320,7 @@ webabraco - /webabraco [PESSOA]
 webbeijo - /webbeijo [PESSOA]
 websexo - /websexo [PESSOA]
 dente - /dente
+kibon - /kibon
 '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 

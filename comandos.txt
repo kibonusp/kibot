@@ -13,4 +13,5 @@ webcafune - Dá um cafuné em alguéme
 webabraco - Dá um abraço em alguém
 webbeijo - Dá um beijo em alguém
 dente - Manda coisas de dente e "easter-eggs" (by Odonto)
+kibon - Manda imagens de sorvetes Kibon
 help - Mostra como usar os comandos
