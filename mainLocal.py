@@ -8,10 +8,10 @@ from dentes import dente_fotos
 from informacoes import TOKEN
 from time import sleep
 import speech_recognition as sr
-import subprocess
 import json
 import time
 from sorvetes import iceCreamImages
+import ffmpeg
 
 DATABASE = "fuvest"
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -289,10 +289,14 @@ def dente (update, context):
 
 def traduz (update, context):
     audio  = context.bot.getFile(update.message.reply_to_message.voice)
-    ogg = 'audio.ogg'
-    wav = 'audio.wav'
+    ogg = "Audios/audio.ogg"
+    wav = "Audios/audio.wav"
     audio.download(ogg)
-    subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
+
+    stream = ffmpeg.input(ogg)
+    stream = ffmpeg.output(stream, wav)
+    stream = ffmpeg.overwrite_output(stream)
+    ffmpeg.run(stream)
 
     r = sr.Recognizer()
     
