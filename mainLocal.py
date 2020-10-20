@@ -2,17 +2,18 @@ from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHan
 import logging
 import random
 import os
-from dentes import dente_fotos
-from informacoes import TOKEN, APPNAME
+from Utils.dentes import dente_fotos
+from Utils.informacoes import TOKEN, APPNAME
 from time import sleep
 import json
-from sorvetes import iceCreamImages
+from Utils.sorvetes import iceCreamImages
 import speech_recognition as sr
 import ffmpeg
 import sqlite3
 
 DATABASE = "userInfo"
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
+NOTFUNNYAUDIOS = ["ping.ogg", "pong.ogg", "audio.ogg", "audio.wav"]
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
@@ -136,15 +137,18 @@ def dividegrupos (update, context):
 
 def audio (update, context):
     audio = "./Audios/"
-    audio += random.choice(os.listdir(audio))
+    audioFile = ""
+    while audioFile not in NOTFUNNYAUDIOS:
+        audioFile = random.choice(os.listdir(audio))
+    audio += audioFile
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
 def ping (update, context):
-    ping = "./Ping Pong/ping.mp3"
+    ping = "./Audios/ping.mp3"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
 
 def pong (update, context):
-    pong = "./Ping Pong/pong.mp3"
+    pong = "./Audios/pong.mp3"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
 
 def loadJSON(nomeArquivo):
@@ -178,14 +182,14 @@ def pingpong(update, context):
         while not vitoria and rodadas < 10:
             #round ping
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/ping.ogg", 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Audios/ping.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pingJogador
             sleep(random.uniform(0,1))
             #round pong
             if not vitoria:
-                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/pong.ogg", 'rb'))
+                context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Audios/pong.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pongJogador
