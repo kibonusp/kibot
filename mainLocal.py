@@ -3,6 +3,7 @@ import logging
 import random
 import sqlite3
 import os
+from databaseManager import DBM
 from dentes import dente_fotos
 from informacoes import TOKEN
 from time import sleep
@@ -291,7 +292,7 @@ def traduz (update, context):
     ogg = 'audio.ogg'
     wav = 'audio.wav'
     audio.download(ogg)
-    process = subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
+    subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
 
     r = sr.Recognizer()
     
