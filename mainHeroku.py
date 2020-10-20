@@ -245,8 +245,8 @@ def dente (update, context):
 """
 def traduz (update, context):
     audio  = context.bot.getFile(update.message.reply_to_message.voice)
-    ogg = 'audio.ogg'
-    wav = 'audio.wav'
+    ogg = './Audios/audio.ogg'
+    wav = './Audios/audio.wav'
     audio.download(ogg)
     process = subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
 
