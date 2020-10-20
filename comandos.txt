@@ -14,4 +14,5 @@ webabraco - Dá um abraço em alguém
 webbeijo - Dá um beijo em alguém
 dente - Manda coisas de dente e "easter-eggs" (by Odonto)
 traduz - Converte um áudio marcado para texto (by Hiro)
+kibon - Manda picolés deliciosos da Kibon (by Vinho)
 help - Mostra como usar os comandos
