@@ -3,17 +3,15 @@ import logging
 import random
 import sqlite3
 import os
-from databaseManager import DBM
-from dentes import dente_fotos
-from informacoes import TOKEN
+from Utils.dentes import dente_fotos
+from Utils.informacoes import TOKEN
 from time import sleep
 import speech_recognition as sr
 import json
-import time
-from sorvetes import iceCreamImages
+from Utils.sorvetes import iceCreamImages
 import ffmpeg
 
-DATABASE = "fuvest"
+DATABASE = "userInfo"
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
 
 def start(update, context):
@@ -184,14 +182,14 @@ def pingpong(update, context):
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pingJogador
-            time.sleep(random.uniform(0,1))
+            sleep(random.uniform(0,1))
             #round pong
             if not vitoria:
                 context.bot.send_audio(chat_id=update.effective_chat.id, audio=open("./Ping Pong/pong.ogg", 'rb'))
                 if random.randint(0,10) == 1:
                     vitoria = True
                     vitoriaJogador = pongJogador
-            time.sleep(random.uniform(0,1))
+            sleep(random.uniform(0,1))
             rodadas += 2
         mensagemEnviar = mensagemvitoria(rodadas, vitoria, vitoriaJogador, listaMensagens)
     context.bot.send_message(chat_id=update.effective_chat.id, text=mensagemEnviar, reply_to_message_id=update.message.message_id)
