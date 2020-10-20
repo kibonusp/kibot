@@ -10,6 +10,7 @@ from time import sleep
 import subprocess
 import json
 import time
+from sorvetes import iceCreamImages
 
 DATABASE = "fuvest"
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -322,6 +323,13 @@ dente - /dente
 '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
 
+def kibon(update, context):
+    image = "./Sorvetes/"
+    photo = random.choice(list(iceCreamImages.keys()))
+    image += iceCreamImages[photo]["img"]
+    caption = "<i>" + iceCreamImages[photo]["cap"] + "</i>"
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, "rb"), caption=caption, parse_mode="html")
+
 def main():
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
@@ -344,6 +352,7 @@ def main():
     dp.add_handler(CommandHandler('webcafune', webcafune))
     dp.add_handler(CommandHandler('dente', dente))
     # dp.add_handler(CommandHandler('traduz', traduz))
+    dp.add_handler(CommandHandler('kibon', kibon))
 
     updater.start_polling()
     updater.idle()
