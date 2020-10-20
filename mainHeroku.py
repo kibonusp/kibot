@@ -8,6 +8,7 @@ from informacoes import TOKEN, APPNAME
 from time import sleep
 import json
 import time
+from sorvetes import iceCreamImages
 
 DATABASE_URL = os.environ['DATABASE_URL']
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
@@ -241,6 +242,23 @@ def dente (update, context):
     if eh_audio:
         context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
+"""
+def traduz (update, context):
+    audio  = context.bot.getFile(update.message.reply_to_message.voice)
+    ogg = 'audio.ogg'
+    wav = 'audio.wav'
+    audio.download(ogg)
+    process = subprocess.run(['ffmpeg','-i',ogg, wav, '-y'])
+
+    r = sr.Recognizer()
+    
+    with sr.WavFile(wav) as source:
+        with sr.AudioFile(wav) as source:
+            voice = r.record(source)
+            frase = r.recognize_google(voice, language= 'pt-BR')
+            context.bot.send_message(chat_id=update.effective_chat.id, text=frase)
+"""
+
 def ajuda (update, context):
     helpText = '''start - /start
 mbti - /mbti [MBTI]
@@ -261,6 +279,13 @@ websexo - /websexo [PESSOA]
 dente - /dente
 '''
     context.bot.send_message(chat_id=update.effective_chat.id, text=helpText)
+
+def kibon(update, context):
+    image = "./Sorvetes/"
+    photo = random.choice(list(iceCreamImages.keys()))
+    image += iceCreamImages[photo]["img"]
+    caption = "<i>" + iceCreamImages[photo]["cap"] + "</i>"
+    context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, "rb"), caption=caption, parse_mode="html")
 
 def main():
     PORT = int(os.environ.get('PORT', 5000))
@@ -285,6 +310,8 @@ def main():
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
     dp.add_handler(CommandHandler('dente', dente))
+    # dp.add_handler(CommandHandler('traduz', traduz))
+    dp.add_handler(CommandHandler('kibon', kibon))
     
     updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
     updater.bot.setWebhook(APPNAME + TOKEN)
