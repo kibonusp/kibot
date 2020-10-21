@@ -6,9 +6,9 @@ Bot de Telegram com funções completamente estúpidas. Você pode utilizar ele 
     <summary> Tutorial</summary>
 Para adicionar o bot em um grupo de Telegram clique em *Adicionar Membro* e pesquise por @sorvebot:
 
-![Adicionar Membro](https://i.imgur.com/3Uf1zZW.png)
+![Adicionar Membro](https://i.imgur.com/mZxd9K1.png)
 
-![Adicionar kibot](https://i.imgur.com/24fNjjI.png)
+![Adicionar kibot](https://i.imgur.com/gXocwyF.png)
 
 E pronto, agora você pode usar o bot!!!! Digite / no chat para ver os comandos possíveis e uma breve descrição de cada um deles. Para uma descrição mais detalhada do uso dos comandos, utilize /help.
 </details>
@@ -22,7 +22,7 @@ pip install -r requirements.txt
 ```
 Agora, para você administrar um kibot, primeiro crie um bot usando o comando /newbot do @BotFather. Após isso, pegue o token e crie um arquivo informacoes.py contendo o token dentro do diretório kibot/Libraries e o appname do Heroku, caso vá usar.
 
-![informacoes.py](https://i.imgur.com/TKn5GPu.png)
+![informacoes.py](https://i.imgur.com/zwwjLuL.png)
 
 E está pronto ^^
 Para rodar o bot na sua máquina, simplesmente execute o comando
@@ -68,4 +68,3 @@ Os comandos ~~inúteis~~ atuais do bot são esses:
 | /kibon | Retorna deliciosos picolés Kibon | /kibon |
 | /traduz | Converte um áudio em mensagem | /traduz *mande esse comando respondendo um áudio* |
 | /help | Demonstra o uso de cada um dos comandos | /help |
-
