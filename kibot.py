@@ -2,46 +2,29 @@ from telegram.ext import Updater, InlineQueryHandler, CommandHandler, MessageHan
 import logging
 import random
 import os
-from Libraries.dentes import dente_fotos
-from Libraries.informacoes import TOKEN, APPNAME
 from time import sleep
 import json
-from Libraries.sorvetes import iceCreamImages
 import speech_recognition as sr
 import ffmpeg
-import sqlite3
 
-DATABASE = "userInfo"
+from Libraries.databaseManager import DatabaseManegementPostgres, DatabaseManegementSQLite
+from Libraries.dentes import dente_fotos
+from Libraries.informacoes import TOKEN, APPNAME
+from Libraries.sorvetes import iceCreamImages
+
 MBTILIST = ["ENFJ", "INFJ", "INTJ", "ENTJ", "ENFP", "INFP", "INTP", "ENTP", "ESFP", "ISFP", "ISTP", "ESTP", "ESFJ", "ISFJ", "ISTJ", "ESTJ"]
+dbm = ""
 NOTFUNNYAUDIOS = ["ping.ogg", "pong.ogg", "audio.ogg", "audio.wav"]
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text="Oi, que casada você vai querer comer hoje?")
 
-def createOrFindUser (username, userID):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-
-    cur.execute("SELECT username FROM Users WHERE id = (?)", (userID,))
-    user = cur.fetchall()
-
-    if not user:
-        cur.execute("INSERT INTO Users(id, username) VALUES     (%s, %s)", (userID, username))
-        print("Usuário novo adicionado: {}".format(username))
-    else:
-        print("Usuário encontrado: {}".format(username))
-    print("userID:", userID)
-    conn.commit()
-
 def mbti(update, context):
     mbtiValue = update.message.text.partition(' ')[2].upper()
 
     if mbtiValue in MBTILIST:
-        createOrFindUser(update.effective_user.username, update.effective_user.id)
-        conn = sqlite3.connect(DATABASE)
-        cur = conn.cursor()
-        cur.execute("UPDATE Users SET mbti=(?) WHERE id=(?)", (mbtiValue, update.effective_user.id))
-        conn.commit()
+        dbm.createOrFindUser(update.effective_user.username, update.effective_user.id)
+        dbm.setMbtiValue(mbtiValue, update.effective_user.id)
         answerText = "MBTI de @{} configurado para {}.".format(update.effective_user.username, mbtiValue)
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
@@ -49,42 +32,15 @@ def mbti(update, context):
         answerText = "Digite uma personalidade MBTI válida, @{}.".format(update.effective_user.username)
         context.bot.send_message(chat_id=update.effective_chat.id, text=answerText)
 
-def casalMBTI (update, context):
-    conn = sqlite3.connect(DATABASE)
-    cur = conn.cursor()
-
+def casalMBTI(update, context):
     response = list()
-    casais = {"ESTJ": "ISFP", "ISFP":"ESTJ",
-            "ISTJ": "ESFP", "ESFP":"ISTJ",
-            "INFP": "ENFJ", "ENFJ":"INFP",
-            "INTP": "ENTJ", "ENTJ": "INTP",
-            "ESTP": "ISFJ", "ISFJ": "ESTP",
-            "ENTP": "INFJ", "INFJ": "ENTP",
-            "ESFJ": "ISTP", "ISTP": "ESFJ",
-            "ENFP": "INTJ", "INTJ": "ENFP"}
-
-    cur.execute("SELECT mbti FROM Users WHERE id=(%s)", (update.effective_user.id,))
-    userMbtiTuple = cur.fetchall()
-
-    companions = list()
-    if not userMbtiTuple:
-        print("Usuário @{} não cadastrado".format(update.effective_user.username,))
-        response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(update.effective_user.id,))
-        return companions
-
-    userMbti = list(userMbtiTuple[0])[0]
-    cur.execute("SELECT username FROM Users WHERE mbti=(%s)", (casais[userMbti],))
-    matches = cur.fetchall()
-    for user in matches:
-        formatedCompanion = ''.join(map(str,user[0]))
-        companions.append(formatedCompanion)
-    conn.commit()
-
+    companions = dbm.findMbtiCouples(response, update.effective_user.username, update.effective_user.id)
     for text in response:
         context.bot.send_message(chat_id=update.effective_chat.id,text=text)
+    
     return companions
 
-def casalpossivel (update, context):
+def casalpossivel(update, context):
     companions = casalMBTI(update, context)
     if companions:
         companionList = "Lista de Companheiros:"
@@ -94,7 +50,7 @@ def casalpossivel (update, context):
     else:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Não há companheiros disponíveis para @{}.".format(update.effective_user.username))
 
-def parceiroMBTI (update, context):
+def parceiroMBTI(update, context):
     companions = casalMBTI(update, context)
     if companions:
         companion = random.choice(companions)
@@ -144,11 +100,11 @@ def audio (update, context):
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
 
 def ping (update, context):
-    ping = "./CommandFolders/ping.mp3"
+    ping = "./CommandFolders/Audios/ping.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(ping, 'rb'))
 
 def pong (update, context):
-    pong = "./CommandFolders/pong.mp3"
+    pong = "./CommandFolders/Audios/pong.ogg"
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(pong, 'rb'))
 
 def loadJSON(nomeArquivo):
@@ -167,7 +123,7 @@ def mensagemvitoria(rodadas, vitoriaPartida, vitoriaJogador, listaMensagens):
     else:
         mensagemEnviar = "{}{}".format(listaMensagens[3], vitoriaJogador)
     return mensagemEnviar
-        
+
 def pingpong(update, context):
     listaMensagens = loadJSON("ping_pong_mensagens.json")
     listaJogadores = update.message.text.split()[1:]
@@ -177,6 +133,7 @@ def pingpong(update, context):
         defineLados = random.randint(0,1)
         pingJogador = listaJogadores[defineLados]
         pongJogador = listaJogadores[1-defineLados]
+        vitoriaJogador = pingJogador
         rodadas = 0
         vitoria = False
         while not vitoria and rodadas < 10:
@@ -262,7 +219,7 @@ def websexo (update, context):
     else:
         message = "@{}, você precisa dizer quem você quer comer ^^"
         context.bot.send_message(chat_id=update.effective_chat.id, text=message)
-
+        
 sent_images = set()
 def dente (update, context):
     imagem = "./CommandFolders/Odontologia/"
@@ -273,7 +230,7 @@ def dente (update, context):
         if foto not in sent_images:
             sent_images.add(foto)
             break
-   
+
     eh_audio = False 
     
     if foto == "suga" or foto == "motorzim":
@@ -338,7 +295,30 @@ def kibon(update, context):
     caption = "<i>" + iceCreamImages[photo]["cap"] + "</i>"
     context.bot.sendPhoto(chat_id=update.message.chat_id, photo=open(image, "rb"), caption=caption, parse_mode="html")
 
+import argparse
+
 def main():
+    global dbm
+
+    PORT = int(os.environ.get('PORT', 5000))
+
+    parser = argparse.ArgumentParser(description='Kibot')
+    parser.add_argument('--local',
+                        dest='is_local',
+                        action='store_const',
+                        const=True,
+                        default=False,
+                        help='Flag to run as local with sqlite, not postgres.')
+
+    args = parser.parse_args()
+
+    if not args.is_local:
+        DATABASE_URL = os.environ['DATABASE_URL']
+        dbm = DatabaseManegementPostgres(DATABASE_URL)
+    else:
+        DATABASE = "userInfo"
+        dbm = DatabaseManegementSQLite(DATABASE)
+
     updater = Updater(token=TOKEN, use_context=True)
     dp = updater.dispatcher
 
@@ -359,10 +339,15 @@ def main():
     dp.add_handler(CommandHandler('websexo', websexo))
     dp.add_handler(CommandHandler('webcafune', webcafune))
     dp.add_handler(CommandHandler('dente', dente))
-    dp.add_handler(CommandHandler('traduz', traduz))
     dp.add_handler(CommandHandler('kibon', kibon))
+    dp.add_handler(CommandHandler('traduz', traduz))
+    
+    if not args.is_local:
+        updater.start_webhook(listen="0.0.0.0", port=int(PORT), url_path=TOKEN)
+        updater.bot.setWebhook(APPNAME + TOKEN)
+    else:
+        updater.start_polling()
 
-    updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
