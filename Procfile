@@ -1,1 +1,1 @@
-web: python3 mainHeroku.py
+web: python3 kibot.py
