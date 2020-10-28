@@ -38,7 +38,7 @@ class DatabaseManegementPostgres:
         companions = list()
         if not userMbtiTuple:
             print("Usuário @{} não cadastrado".format(username))
-            response.append("@{}, defina sua personalidade  MBTI antes com o comando mbti.".format(username))
+            response.append("@{}, defina sua personalidade MBTI antes com o comando mbti.".format(username))
             return companions
 
         userMbti = list(userMbtiTuple[0])[0]
