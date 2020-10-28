@@ -1,0 +1,4 @@
+python-telegram-bot==12.8
+psycopg2-binary==2.8.6
+SpeechRecognition==3.8.1
+ffmpeg-python==0.2.0
