@@ -352,6 +352,7 @@ def main():
 
 if __name__ == '__main__':
     print("Digite Ctrl + C para desativar.")
+    print("Opa")
     print("=== BOT ATIVADO ===")
     main()
     print("=== BOT DESATIVADO ===")
