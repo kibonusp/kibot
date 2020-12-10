@@ -94,7 +94,7 @@ def dividegrupos (update, context):
 def audio (update, context):
     audio = "./CommandFolders/Audios/"
     audioFile = ""
-    while audioFile not in NOTFUNNYAUDIOS:
+    while audioFile in NOTFUNNYAUDIOS:
         audioFile = random.choice(os.listdir(audio))
     audio += audioFile
     context.bot.send_audio(chat_id=update.effective_chat.id, audio=open(audio, 'rb'))
